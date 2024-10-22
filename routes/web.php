@@ -47,7 +47,8 @@ Route::middleware([
     Route::get('/customer/invoice', function () {
         return view('user.pages.invoice');
     });
-
+    Route::post('/customer', [ACustomerController::class, 'store'])->name('customers.store');
+    Route::resource('customers', AcustomerController::class);
 
 
 });

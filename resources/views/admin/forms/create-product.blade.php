@@ -1,4 +1,5 @@
-<div class="nk-add-product toggle-slide toggle-slide-right" data-content="addProduct" data-toggle-screen="any" data-toggle-overlay="true" data-toggle-body="true" data-simplebar>
+<div class="nk-add-product toggle-slide toggle-slide-right" data-content="addProduct" data-toggle-screen="any"
+    data-toggle-overlay="true" data-toggle-body="true" data-simplebar>
     <div class="nk-block-head">
         <div class="nk-block-head-content">
             <h5 class="nk-block-title">New Product</h5>
@@ -23,19 +24,11 @@
                 </div>
 
 
-                <div class="col-md-12">
-                    <div class="form-control-wrap">
-                        <label class="form-label" for="p_category">SKU</label>
-                        <div class="input-group">
-                            <select class="form-select" name="p_category" id="p_category" required>
-                                <option disabled selected>Select Category</option>
-
-                            </select>
-                            <div class="input-group-append">
-                                <!-- Button to open modal to add SKU -->
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#skuModal" class="btn btn-outline-primary btn-dim">Add</button>
-                                <button type="button"  class="btn btn-outline-primary btn-dim" id="deleteSkuBtn">Delete</button>
-                            </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label" for="p_sku">SKU</label>
+                        <div class="form-control-wrap">
+                            <input type="text" name="p_sku" class="form-control" id="p_sku" required>
                         </div>
                     </div>
                 </div>
@@ -46,7 +39,8 @@
                     <div class="form-group">
                         <label class="form-label" for="p_price">Price</label>
                         <div class="form-control-wrap">
-                            <input type="number" step="0.01" name="p_price" class="form-control" id="p_price" required>
+                            <input type="number" step="0.01" name="p_price" class="form-control" id="p_price"
+                                required>
                         </div>
                     </div>
                 </div>
@@ -109,7 +103,8 @@
 
                 <!-- Submit Button -->
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary"><em class="icon ni ni-plus"></em><span>Add New</span></button>
+                    <button type="submit" class="btn btn-primary"><em class="icon ni ni-plus"></em><span>Add
+                            New</span></button>
                 </div>
             </div>
         </form>
