@@ -24,52 +24,52 @@
                     <thead>
                         <tr>
                             <th>Product Image</th>
-                            <th>Product Code(SKU)</th>
+                            <th>Product Code (SKU)</th>
                             <th>Product Name</th>
                             <th>Weight</th>
-                            <th>Unit</th>
                             <th>Date</th>
                             <th>Action</th>
-
-
-
-
-
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        @foreach ($products as $product)
+                            <tr>
+                                <td>
+                                    @if ($product->img)
+                                        <img src="{{ asset('storage/' . $product->img) }}"
+                                            alt="{{ $product->product_name }}" style="width: 50px; height: 50px;">
+                                    @else
+                                        No Image
+                                    @endif
+                                </td>
 
-                            <td>pictureofasexychicken</td>
-                            <td>Chicken Legs</td>
-                            <td>P1</td>
-                            <td>1000(g)</td>
-                            <td>October 1, 2024</td>
-                            <td>
-                                <div class="dropdown">
-                                    <a href="#" class="dropdown-toggle btn btn-icon btn-trigger"
-                                        data-bs-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <ul class="link-list-opt no-bdr">
-                                            <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit
-                                                        Selected</span></a></li>
-                                            <li><a href="#"><em class="icon ni ni-trash"></em><span>Remove
-                                                        Selected</span></a></li>
-                                            <li><a href="#"><em class="icon ni ni-bar-c"></em><span>Update
-                                                        Stock</span></a></li>
-                                        </ul>
+                                <td>{{ $product->product_sku }}</td>
+                                <td>{{ $product->product_name }}</td>
+                                <td>{{ $product->weight }}(g)</td>
+                                <td>{{ $product->created_at->format('F j, Y') }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <a href="#" class="dropdown-toggle btn btn-icon btn-trigger"
+                                            data-bs-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <ul class="link-list-opt no-bdr">
+                                                <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit
+                                                            Selected</span></a></li>
+                                                <li><a href="#"><em class="icon ni ni-trash"></em><span>Remove
+                                                            Selected</span></a></li>
+                                                <li><a href="#"><em class="icon ni ni-bar-c"></em><span>Update
+                                                            Stock</span></a></li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-
-
-                        </tr>
-
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
-        </div><!-- .card-preview -->
-    </div> <!-- nk-block -->
+        </div>
+    </div>
 
     @include('admin.forms.create-product')
     @include('admin.forms.sku-modal')
