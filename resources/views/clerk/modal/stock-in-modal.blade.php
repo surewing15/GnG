@@ -22,21 +22,9 @@
                         </div>
                     </div>
 
-
-                    <!-- Stock Category -->
-                    <div class="form-group mb-3">
-                        <label class="form-label" for="description">Description</label>
-                        <input type="text" name="stock_category" class="form-control" id="stock-category" required>
-                    </div>
-
                     <!-- Stock Quantity -->
                     <div class="form-group mb-3">
                         <label class="form-label" for="stock-quantity">Stock Quantity</label>
-                        <input type="number" name="stock_quantity" class="form-control" id="stock-quantity" required>
-                    </div>
-                    
-                    <div class="form-group mb-3">
-                        <label class="form-label" for="stock-quantity">Price</label>
                         <input type="number" name="stock_quantity" class="form-control" id="stock-quantity" required>
                     </div>
 

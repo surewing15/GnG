@@ -9,7 +9,8 @@
             <a href="#" class="nk-nav-toggle nk-quick-nav-icon d-xl-none" data-target="sidebarMenu">
                 <em class="icon ni ni-arrow-left"></em>
             </a>
-            <a href="#" class="nk-nav-compact nk-quick-nav-icon d-none d-xl-inline-flex" data-target="sidebarMenu">
+            <a href="#" class="nk-nav-compact nk-quick-nav-icon d-none d-xl-inline-flex"
+                data-target="sidebarMenu">
                 <em class="icon ni ni-menu"></em>
             </a>
         </div>
@@ -34,13 +35,6 @@
                         <a href="/clerk/stocks" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-package-fill"></em></span>
                             <span class="nk-menu-text">Stocks</span>
-                        </a>
-                    </li>
-
-                    <li class="nk-menu-item">
-                        <a href="/clerk/history" class="nk-menu-link">
-                            <span class="nk-menu-icon"><em class="icon ni ni-history"></em></span>
-                            <span class="nk-menu-text">Stocks History</span>
                         </a>
                     </li>
 

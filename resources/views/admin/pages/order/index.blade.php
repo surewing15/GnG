@@ -51,7 +51,7 @@
                             <label class="custom-control-label" for="oid"></label>
                         </div>
                     </div>
-                    <div class="nk-tb-col"><span>Reference ID</span></div>
+                    <div class="nk-tb-col"><span>Product Code (SKU)</span></div>
                     <div class="nk-tb-col tb-col-md"><span>Date</span></div>
                     <div class="nk-tb-col"><span class="d-none d-sm-block">Status</span></div>
                     <div class="nk-tb-col tb-col-sm"><span>Customer</span></div>

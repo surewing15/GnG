@@ -11,4 +11,5 @@ class AorderController extends Controller
     return view('admin.pages.order.index');
 
    }
+
 }

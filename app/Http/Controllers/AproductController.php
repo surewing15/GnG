@@ -32,19 +32,20 @@ class AproductController extends Controller
         ]);
 
         // Handle image upload if provided
+        $imagePath = null; // Default null in case no image is uploaded
         if ($request->hasFile('p_image')) {
-            $imagePath = $request->file('p_image')->store('products', 'public'); // This stores images in 'storage/app/public/products'
+            $imagePath = $request->file('p_image')->store('products', 'public'); // Stores in 'storage/app/public/products'
+        }
 
         // Create a new product instance
         $product = new ProductModel();
         $product->product_name = $validatedData['p_name'];
         $product->product_sku = $validatedData['p_sku'];
         $product->weight = $validatedData['p_weight'];
-        $product->img = $imagePath;
+        $product->img = $imagePath; // Store image path or null if no image uploaded
         $product->save();
 
         // Redirect back with a success message
         return redirect()->back()->with('success', 'Product added successfully.');
     }
-}
 }

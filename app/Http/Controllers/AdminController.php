@@ -32,4 +32,6 @@ class AdminController extends Controller
             return redirect('/login')->with('error', 'Please log in first');
         }
     }
+
+
 }

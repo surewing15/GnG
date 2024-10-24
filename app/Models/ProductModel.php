@@ -18,4 +18,10 @@ class ProductModel extends Model
         'weight',
         'img',
     ];
+
+    // Relationship with Stock
+    public function stocks()
+    {
+        return $this->hasMany(StockModel::class, 'product_id');
+    }
 }
