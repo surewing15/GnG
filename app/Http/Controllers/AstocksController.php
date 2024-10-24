@@ -33,9 +33,9 @@ class AstocksController extends Controller
      */
     public function store(Request $request)
     {
-                $validatedData = $request->validate([
+        $validatedData = $request->validate([
             'product_id' => 'required|exists:tbl_product,product_id',
-            'stock_quantity' => 'required|integer|min:15',
+            'stock_quantity' => 'required|integer',
         ]);
 
         try {

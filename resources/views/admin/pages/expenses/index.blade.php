@@ -44,14 +44,13 @@
                                             <th>Description</th>
                                             <th>Amount</th>
                                             <th>Action</th>
-
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($expenses as $expense)
                                         <tr>
-                                            <td>Allowance</td>
-                                            <td>100.00</td>
-
+                                            <td>{{ $expense->e_description }}</td>
+                                            <td>{{ number_format($expense->e_amount, 2) }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown" aria-expanded="false">
@@ -59,14 +58,14 @@
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px;" data-popper-placement="bottom-end">
                                                         <ul class="link-list-opt no-bdr">
-                                                            <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit Customer</span></a></li>
-                                                            <li><a href="#"><em class="icon ni ni-trash"></em><span>Delete Expenses</span></a></li>
+                                                            <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit Expense</span></a></li>
+                                                            <li><a href="#"><em class="icon ni ni-trash"></em><span>Delete Expense</span></a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </td>
                                         </tr>
-                                        <!-- Additional rows can be added here -->
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

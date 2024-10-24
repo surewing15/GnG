@@ -80,8 +80,7 @@
 
                             <div class="form-group mb-3">
                                 <label class="form-label" for="quantity">Stock Quantity</label>
-                                <input type="number" name="stock_quantity" class="form-control" id="quantity"
-                                    min="15" required>
+                                <input type="number" name="stock_quantity" class="form-control" id="quantity">
                                 @error('stock_quantity')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror

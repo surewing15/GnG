@@ -36,15 +36,16 @@ Route::middleware([
     // Route::get('/admin/stocks', [AstocksController::class, 'create']);
     Route::post('/admin/stocks', [AstocksController::class, 'store'])->name('stocks.store');
 
-// Route for displaying stock history
-Route::get('/admin/history', [StockHistoryController::class, 'showStockHistory'])->name('stock.history');
+    // Route for displaying stock history
+    Route::get('/admin/history', [StockHistoryController::class, 'showStockHistory'])->name('stock.history');
 
-// Route for updating stock
+    // Route for updating stock
 
-// Route::post('/update-stock/{stock_id}', [StockHistoryController::class, 'updateStock'])->name('stock.update');
+    // Route::post('/update-stock/{stock_id}', [StockHistoryController::class, 'updateStock'])->name('stock.update');
 
 
-    Route::get('/admin/expenses', [AexpensesController::class, 'index']);
+    Route::get('/admin/expenses', [AexpensesController::class, 'index'])->name('expenses.index');
+    Route::post('/admin/expenses', [AexpensesController::class, 'store'])->name('expenses.store');
 
     // Route::get('/admin/order/history', function () {
     //     return view('admin.pages.history.order-history');
