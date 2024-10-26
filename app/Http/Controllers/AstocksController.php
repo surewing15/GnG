@@ -24,7 +24,7 @@ class AstocksController extends Controller
             ->get();
 
         $products = ProductModel::all();
-
+        // dd($products);
         return view('admin.pages.stocks.index', compact('stocks', 'products'));
     }
 

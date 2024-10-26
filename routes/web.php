@@ -81,12 +81,15 @@ Route::middleware([
 
     // Route::resource('stocks', AstocksController::class);
 
-    Route::get('/cashier/pos ',[CashierController::class,'index']);
-    Route::get('/cashier/order ',[CashierController::class,'order']);
-    Route::get('/cashier/wholesales/report ',[CashierReportController::class,'wholesale']);
-    Route::get('/cashier/denomination/report ',[CashierReportController::class,'denomination']);
-    Route::get('/cashier/eggsales/report ',[CashierReportController::class,'eggsales']);
-    Route::get('/cashier/retail/report ',[CashierReportController::class,'salesretail']);
+    Route::get('/cashier/pos', [CashierController::class, 'index'])->name('cashier.index');
+
+    Route::get('/cashier/order ', [CashierController::class, 'order']);
+
+
+    // Route::get('/cashier/wholesales/report ',[CashierReportController::class,'wholesale']);
+    // Route::get('/cashier/denomination/report ',[CashierReportController::class,'denomination']);
+    // Route::get('/cashier/eggsales/report ',[CashierReportController::class,'eggsales']);
+    // Route::get('/cashier/retail/report ',[CashierReportController::class,'salesretail']);
 
 
 

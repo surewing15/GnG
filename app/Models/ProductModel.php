@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 
 class ProductModel extends Model
 {
@@ -14,14 +15,31 @@ class ProductModel extends Model
 
     protected $fillable = [
         'product_sku',
-        'product_name',
-        'weight',
+        'category',
         'img',
     ];
 
-    // Relationship with Stock
-    public function stocks()
+    public static function getCategoryOptions()
     {
-        return $this->hasMany(StockModel::class, 'product_id');
+        $type = DB::select("SHOW COLUMNS FROM tbl_product WHERE Field = 'category'");
+
+        if (isset($type[0]->Type)) {
+            preg_match('/^enum\((.*)\)$/', $type[0]->Type, $matches);
+
+            $enum = [];
+            foreach (explode(',', $matches[1]) as $value) {
+                $enum[] = trim($value, "'");
+            }
+
+            return $enum;
+        }
+
+        return [];
     }
+
+    public function stock()
+    {
+        return $this->hasMany(StockModel::class, 'product_id', 'product_id');
+    }
+
 }

@@ -41,6 +41,11 @@ class StockModel extends Model
     }
     public function stockHistory()
     {
-        return $this->hasMany(StockHistoryModel::class,  'stock_id');
+        return $this->hasMany(StockHistoryModel::class, 'stock_id');
     }
+    public function stocks()
+{
+    return $this->hasMany(StockModel::class, 'product_id', 'product_id');
+}
+
 }

@@ -15,19 +15,23 @@
 
             <div class="row g-3">
 
-                {{-- <div class="col-12">
+                <!-- Category Dropdown -->
+                <!-- Category Dropdown -->
+                <div class="col-12">
                     <div class="form-group">
-                        <label class="form-label" for="p_name">Product Name</label>
+                        <label class="form-label" for="p_category">Category</label>
                         <div class="form-control-wrap">
-                            <input type="text" name="p_name" class="form-control" id="p_name" required>
+                            <select name="category" class="form-control" id="p_category" required>
+                                @foreach ($categoryOptions as $category)
+                                    <option value="{{ $category }}">{{ ucfirst(str_replace('_', ' ', $category)) }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
-                    @error('p_sku')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div> --}}
+                </div>
 
-
+                <!-- SKU Field -->
                 <div class="col-12">
                     <div class="form-group">
                         <label class="form-label" for="p_sku">SKU</label>
@@ -39,43 +43,35 @@
                 @error('p_sku')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
-            </div>
 
 
-            {{-- <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="p_weight">Weight</label>
-                    <div class="form-control-wrap">
-                        <input type="number" name="p_weight" class="form-control" id="p_weight" required>
+                @error('p_category')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+
+                <!-- Product Image Upload -->
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label" for="p_image">Product Image</label>
+                        <div class="upload-zone small bg-lighter my-2">
+                            <input type="file" name="p_image" class="form-control" id="p_image" accept="image/*">
+                            <div class="dz-message">
+                                <span class="dz-message-text">Drag and drop a file or click to upload.</span>
+                            </div>
+                        </div>
                     </div>
-                    @error('p_weight')
+                    @error('p_image')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
-            </div> --}}
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="p_image">Product Image</label>
-                    <div class="upload-zone small bg-lighter my-2">
-                        <input type="file" name="p_image" class="form-control" id="p_image" accept="image/*">
-                        <div class="dz-message">
-                            <span class="dz-message-text">Drag and drop a file or click to upload.</span>
-                        </div>
-                    </div>
+                <!-- Submit Button -->
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <em class="icon ni ni-plus"></em><span>Add New</span>
+                    </button>
                 </div>
-                @error('p_image')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
             </div>
-
-
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary"><em class="icon ni ni-plus"></em><span>Add
-                        New</span></button>
-            </div>
+        </form>
     </div>
-    </form>
-</div>
-
 </div>
