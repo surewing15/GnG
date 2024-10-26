@@ -8,7 +8,8 @@ class StockHistoryModel extends Model
 {
     protected $table = 'tbl_stock_history';
     protected $primaryKey = 'history_id';
-    protected $fillable = ['stock_id', 'stock_quantity', 'created_at'];
+    protected $fillable = ['stock_id','created_at', 'updated_at'];
+
 
     public function stock()
     {

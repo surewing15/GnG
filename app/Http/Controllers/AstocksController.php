@@ -17,13 +17,18 @@ class AstocksController extends Controller
      */
     public function index()
     {
-        // Fetch all stocks with their associated product information using eager loading
-        $stocks = StockModel::with('product')->get();
-        $products = ProductModel::all(); // Fetch all products
 
-        // Pass the stocks and products data to the view
+        $stocks = StockModel::with('product')
+            ->select('product_id', \DB::raw('SUM(stock_quantity) as total_quantity'))
+            ->groupBy('product_id')
+            ->get();
+
+        $products = ProductModel::all();
+
         return view('admin.pages.stocks.index', compact('stocks', 'products'));
     }
+
+
 
     /**
      * Store a newly created stock in storage.
@@ -35,11 +40,10 @@ class AstocksController extends Controller
     {
         $validatedData = $request->validate([
             'product_id' => 'required|exists:tbl_product,product_id',
-            'stock_quantity' => 'required|integer',
+            'stock_quantity' => 'required|numeric', // allows decimal values
         ]);
 
         try {
-
             $product = ProductModel::where('product_id', $validatedData['product_id'])->first();
 
             $stock = StockModel::create([
@@ -56,6 +60,7 @@ class AstocksController extends Controller
         }
     }
 
+
     /**
      *
      *
@@ -64,12 +69,16 @@ class AstocksController extends Controller
      */
     private function forwardToHistory($stock)
     {
-        // Create a new StockHistory entry based on the stock information
-        StockHistoryModel::create([
-            'stock_id' => $stock->stock_id,
-            'stock_quantity' => $stock->stock_quantity, // Add quantity to history
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        try {
+            StockHistoryModel::create([
+                'stock_id' => $stock->stock_id,
+                'product_id' => $stock->product_id,
+                'stock_quantity' => $stock->stock_quantity,
+               'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error saving to stock history: ' . $e->getMessage());
+        }
     }
 }

@@ -14,8 +14,8 @@
             @csrf
 
             <div class="row g-3">
-                <!-- Product Name -->
-                <div class="col-12">
+
+                {{-- <div class="col-12">
                     <div class="form-group">
                         <label class="form-label" for="p_name">Product Name</label>
                         <div class="form-control-wrap">
@@ -25,7 +25,7 @@
                     @error('p_sku')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                </div>
+                </div> --}}
 
 
                 <div class="col-12">
@@ -42,7 +42,7 @@
             </div>
 
 
-            <div class="col-12">
+            {{-- <div class="col-12">
                 <div class="form-group">
                     <label class="form-label" for="p_weight">Weight</label>
                     <div class="form-control-wrap">
@@ -53,7 +53,7 @@
                     @enderror
                 </div>
 
-            </div>
+            </div> --}}
             <div class="col-12">
                 <div class="form-group">
                     <label class="form-label" for="p_image">Product Image</label>

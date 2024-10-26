@@ -29,15 +29,16 @@
                         @foreach ($stocks as $stock)
                             <tr>
                                 <td>{{ $stock->product->product_sku ?? 'N/A' }}</td>
-                                <td>{{ $stock->stock_quantity }}</td>
+                                <td>{{ $stock->total_quantity }}(kls)</td> <!-- Display the summed quantity -->
                                 <td>
                                     <div class="dropdown">
                                         <a href="#" class="dropdown-toggle btn btn-icon btn-trigger"
-                                            data-bs-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
+                                            data-bs-toggle="dropdown">
+                                            <em class="icon ni ni-more-h"></em>
+                                        </a>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <ul class="link-list-opt no-bdr">
-                                                <li><a href="#"><em class="icon ni ni-eye"></em><span>View</span></a>
-                                                </li>
+                                               
                                                 <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit</span></a>
                                                 </li>
                                                 <li><a href="#"><em
@@ -49,9 +50,11 @@
                             </tr>
                         @endforeach
                     </tbody>
+
                 </table>
             </div>
         </div>
+
 
         <!-- Stock In Modal -->
         <div class="modal fade" id="stockinModal" tabindex="-1" aria-labelledby="stockinModalLabel" aria-hidden="true">
@@ -69,7 +72,7 @@
                                 <select name="product_id" class="form-control" id="product-id" required>
                                     <option value="">Select product</option>
                                     @foreach ($products as $product)
-                                        <option value="{{ $product->product_id }}">{{ $product->product_name }}</option>
+                                        <option value="{{ $product->product_id }}">{{ $product->product_sku }}</option>
                                     @endforeach
                                 </select>
 
@@ -80,11 +83,13 @@
 
                             <div class="form-group mb-3">
                                 <label class="form-label" for="quantity">Stock Quantity</label>
-                                <input type="number" name="stock_quantity" class="form-control" id="quantity">
+                                <input type="number" name="stock_quantity" class="form-control" id="quantity"
+                                    step="0.01">
                                 @error('stock_quantity')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
+
 
                             <div class="form-group">
                                 <button type="submit" class="btn btn-lg btn-primary">Save Information</button>

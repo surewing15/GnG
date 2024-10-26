@@ -18,10 +18,9 @@
                 </thead>
                 <tbody>
                     @foreach ($stocks as $stock)
-                        
                         @foreach ($stock->stockHistory as $history)
                             <tr>
-                                <td class="tb-col-sku">{{ $stock->product->product_name ?? 'N/A' }}</td>
+                                <td class="tb-col-sku">{{ $stock->product->product_sku ?? 'N/A' }}</td>
                                 <td class="tb-col-quantity"><span class="sub-text">{{ $stock->stock_quantity }}</span>
                                 </td>
                                 <td class="tb-col-date"><span

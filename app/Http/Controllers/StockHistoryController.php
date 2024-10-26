@@ -16,41 +16,40 @@ class StockHistoryController extends Controller
      */
     public function showStockHistory()
     {
-        // Fetch all stocks with their history using eager loading
-        $stocks = StockModel::with('stockHistory')->get();
 
-        // Pass the stocks data to the view
+
+        $stocks = StockModel::with('stockHistory')->get();
+        // dd($stocks->toArray());
+
+
         return view('admin.pages.history.stock-history', compact('stocks'));
     }
 
-    /**
-     * Update the stock and log the change to the stock history.
-     *
+    /*
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $stock_id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function updateStock(Request $request, $stock_id)
     {
-        // Validate the request data
+
         $validatedData = $request->validate([
-            'quantity' => 'required|integer|min:0',
+            'quantity' => 'required|numeric',
         ]);
 
         try {
-            // Find the stock record
+
             $stock = StockModel::findOrFail($stock_id);
 
-            // Update the stock quantity
+
             $stock->stock_quantity = $validatedData['quantity'];
             $stock->save();
 
-            // Log the change in the stock history table
             StockHistoryModel::create([
                 'stock_id' => $stock->stock_id,
                 'product_id' => $stock->product_id,
                 'stock_quantity' => $stock->stock_quantity,
-                'change_reason' => 'Stock updated manually', // Optional, add more details if needed
+                'change_reason' => 'Stock updated manually',
                 'created_at' => now(),
             ]);
 
