@@ -84,6 +84,20 @@ Route::middleware([
     Route::get('/cashier/pos', [CashierController::class, 'index'])->name('cashier.index');
 
     Route::get('/cashier/order ', [CashierController::class, 'order']);
+    Route::post('/cashier/add-to-cart', [CashierController::class, 'addToCart'])->name('cashier.addToCart');
+
+
+    Route::post('/cashier/update-cart-quantity', [CashierController::class, 'updateCartQuantity'])->name('cashier.updateCart');
+    Route::post('/cashier/add-product', [CashierController::class, 'addProduct'])->name('cashier.addProduct');
+
+
+    // Route::post('/cart/add', 'CashierController@addToCart')->name('cart.add');
+    // Route::get('/cart', 'CashierController@showCart')->name('cart.show');
+
+    Route::post('/cart/add', [CashierController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart', [CashierController::class, 'showCart'])->name('cart.show');
+    Route::post('/cart/reset', [CashierController::class, 'resetCart'])->name('cart.reset');
+    Route::post('/cart/update', [CashierController::class, 'update'])->name('cart.update');
 
 
     // Route::get('/cashier/wholesales/report ',[CashierReportController::class,'wholesale']);
