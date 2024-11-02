@@ -1,4 +1,4 @@
-@extends('cashier.theme.layout')
+@extends('admin.theme.layout')
 @section('content')
 
 
@@ -9,7 +9,7 @@
                 <div class="nk-block-head nk-block-head-sm">
                     <div class="nk-block-between">
                         <div class="nk-block-head-content">
-                            <h3 class="nk-block-title page-title">Fresh Dressed Chicken & Products Sales Wholesale</h3>
+                            <h3 class="nk-block-title page-title">Denomination</h3>
                         </div><!-- .nk-block-head-content -->
 
                         <div class="nk-block-head-content">
@@ -35,13 +35,9 @@
                             <table class="datatable-init-export nowrap table" data-export-title="Export">
                                 <thead>
                                     <tr>
-                                        <th>Customer's Name</th>
-                                        <th>Series #</th>
-                                        <th>Cash Sales</th>
-                                        <th>Bal. Payment</th>
-                                        <th>Online</th>
-                                        <th>Credit/Charge</th>
-                                        <th>Remarks</th>
+                                        <th>Cash</th>
+                                        <th>Pieces</th>
+                                        <th>Total</th>
                                         <th>Action</th>
 
 
@@ -53,10 +49,6 @@
                                         <td>Jarni</td>
                                         <td>0323</td>
                                         <td>10,200</td>
-                                        <td>165.45</td>
-                                        <td>yes</td>
-                                        <td>300.000.00</td>
-                                        <td>Check Issue</td>
 
 
 
@@ -69,7 +61,7 @@
                                                     <ul class="link-list-opt no-bdr">
 
                                                         <li><a href="#"><em class="icon ni ni-eye"></em><span>View</span></a></li>
-
+                                                        <li><a href="#"><em class="icon ni ni-trash"></em><span>Delete</span></a></li>
                                                     </ul>
                                                 </div>
                                             </div>

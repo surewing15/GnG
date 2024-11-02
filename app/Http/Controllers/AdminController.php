@@ -24,6 +24,9 @@ class AdminController extends Controller
             else if ($user_type == 'clerk') {
                 return view('clerk.index'); // Assuming there's a clerk.index view
             }
+            else if ($user_type == 'cashier') {
+                return view('cashier.index'); // Assuming there's a clerk.index view
+            }
             else {
                 return redirect('/')->with('error', 'Unauthorized access');
             }
@@ -32,6 +35,4 @@ class AdminController extends Controller
             return redirect('/login')->with('error', 'Please log in first');
         }
     }
-
-
 }

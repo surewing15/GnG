@@ -34,7 +34,7 @@ class StockHistoryController extends Controller
     {
 
         $validatedData = $request->validate([
-            'quantity' => 'required|numeric',
+            'stock_kilos' => 'required|numeric',
         ]);
 
         try {
@@ -42,13 +42,13 @@ class StockHistoryController extends Controller
             $stock = StockModel::findOrFail($stock_id);
 
 
-            $stock->stock_quantity = $validatedData['quantity'];
+            $stock->stock_kilos = $validatedData['kilos'];
             $stock->save();
 
             StockHistoryModel::create([
                 'stock_id' => $stock->stock_id,
                 'product_id' => $stock->product_id,
-                'stock_quantity' => $stock->stock_quantity,
+                'stock_kilos' => $stock->stock_kilos,
                 'change_reason' => 'Stock updated manually',
                 'created_at' => now(),
             ]);

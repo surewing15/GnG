@@ -57,13 +57,11 @@
                                 <div class="card card-bordered product-card">
                                     <ul class="product-badges">
                                         <li>
-                                            <span
-                                                class="badge {{ $product->total_stock > 0 ? 'bg-success' : 'bg-danger' }}">
-                                                {{ $product->total_stock > 0 ? $product->total_stock . ' In Stock' : 'Out of Stock' }}
+                                            <span id="product-kilos-{{ $product->product_id }}"
+                                                class="badge {{ $product->total_kilos > 0 ? 'bg-success' : 'bg-danger' }}">
+                                                {{ $product->total_kilos > 0 ? $product->total_kilos . ' In Kilos' : 'Out of Kilos' }}
                                             </span>
                                         </li>
-
-
                                     </ul>
 
                                     <div class="card-inner text-center">
@@ -76,18 +74,15 @@
                                         <div style="padding: 10px;"></div>
 
                                         <a class="btn btn-primary mt-2"
-                                            onclick="addToCart({{ $product->product_id }})">Add</a>
+                                            onclick="addToCart({{ $product->product_id }}, {{ $product->total_kilos }})">Add</a>
+
 
                                     </div>
                                 </div>
                             </div>
                         @endforeach
+
                     </div>
-
-
-
-
-
                 </div>
             </div>
         </div>
@@ -96,24 +91,30 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="customer_id">Customer <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <a href="http://127.0.0.1:8000/customers/create" class="btn btn-primary">
-                                <i class="bi bi-person-plus"></i>
-                            </a>
-                            <select wire:model.live="customer_id" id="customer_id" class="form-select">
-                                <option value="" selected>Select Customer</option>
-                                <option value="1">antony Anton</option>
-                            </select>
+                        <label class="form-label" for="full-name">Customer Name</label>
+                        <div class="form-control-wrap">
+                            <input type="text" class="form-control" id="cus-name">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label" for="full-name">Phone Number</label>
+                        <div class="form-control-wrap">
+                            <input type="text" class="form-control" id="cus-phone">
+                        </div>
+                    </div>
+                    {{-- <div class="form-group">
+                        <label class="form-label" for="full-name">Date</label>
+                        <div class="form-control-wrap">
+                            <input type="date" class="form-control" id="cus-date">
+                        </div>
+                    </div> --}}
 
                     <div class="table-responsive mt-3">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>Product</th>
-                                    <th>Quantity</th>
+                                    <th>Kilos</th>
                                     <th>Price</th>
                                 </tr>
                             </thead>
@@ -170,7 +171,8 @@
                         </button>
 
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                            data-bs-target="#invoiceModal">Place Order</button>
+                            data-bs-target="#invoiceModal" onclick="prepareReceipt()">Invoice</button>
+
 
 
                     </div>
@@ -179,16 +181,28 @@
         </div>
     </div>
     <script>
-        function addToCart(productId) {
+        function addToCart(productId, kilos) {
             $.ajax({
                 url: '{{ route('cart.add') }}',
                 method: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
-                    product_id: productId
+                    product_id: productId,
+                    kilos: kilos
                 },
                 success: function(response) {
-                    loadCart();
+                    if (response.success) {
+                        loadCart(); // Reload cart if necessary
+
+                        // Update the "In Kilos" display for the specific product without refreshing
+                        const kiloBadge = document.querySelector(`#product-kilos-${productId}`);
+                        if (kiloBadge) {
+                            kiloBadge.textContent = response.updatedTotalKilos > 0 ?
+                                `${response.updatedTotalKilos} In Kilos` : 'Out of Kilos';
+                            kiloBadge.classList.toggle('bg-success', response.updatedTotalKilos > 0);
+                            kiloBadge.classList.toggle('bg-danger', response.updatedTotalKilos <= 0);
+                        }
+                    }
                 },
                 error: function(xhr) {
                     console.error("Error adding product to cart:", xhr.responseText);
@@ -207,6 +221,12 @@
                 success: function(response) {
                     $('#cart-table-body').empty(); // Clear cart items from the table
                     $('#grand-total').text('0.00'); // Reset grand total to zero
+
+                    // Clear customer details
+                    $('#cus-name').val(''); // Reset customer name
+                    $('#cus-phone').val(''); // Reset customer phone
+                    $('#cus-date').val(''); // Reset customer date
+
                     alert(response.success);
                 },
                 error: function(response) {
@@ -274,6 +294,74 @@
                 }
             });
         }
+
+        function prepareReceipt() {
+            let receiptContent = '';
+            let grandTotal = 0;
+            const receiptID = generateReceiptID(); // Generate a new receipt ID
+
+            $('#cart-table-body tr').each(function() {
+                const productName = $(this).find('td:nth-child(1)').text();
+                const quantity = $(this).find('input[id^="quantity-"]').val();
+                const price = $(this).find('input[id^="price-"]').val();
+                const total = (quantity * price).toFixed(2);
+
+                grandTotal += parseFloat(total);
+
+                receiptContent += `
+            <tr>
+                <td>${productName}</td>
+                <td class="text-end">${quantity}</td>
+                <td class="text-end">$${parseFloat(price).toFixed(2)}</td>
+                <td class="text-end">$${total}</td>
+            </tr>
+        `;
+            });
+
+            // Set the receipt ID and other details in the modal
+            $('.receipt-info').html(`
+        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+        <p><strong>Receipt #ID:</strong> ${receiptID}</p>
+    `);
+            $('.receipt-items tbody').html(receiptContent);
+            $('.receipt-total p').html(`<strong>Total:</strong> $${grandTotal.toFixed(2)}`);
+
+            $('#invoiceModal').modal('show');
+        }
+
+        // Function to generate a unique Receipt ID
+        function generateReceiptID() {
+            const date = new Date();
+            const year = date.getFullYear().toString().slice(-2); // Last two digits of year
+            const month = ('0' + (date.getMonth() + 1)).slice(-2); // Month
+            const day = ('0' + date.getDate()).slice(-2); // Day
+            const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase(); // Random alphanumeric string
+
+            return `${year}${month}${day}-${randomPart}`;
+        }
+
+        function completePurchase(productId, customerName, totalKilos, price, phone) {
+            $.ajax({
+                url: '{{ route('transaction.add') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    product_id: productId,
+                    customer_name: customerName,
+                    total_kilos: totalKilos,
+                    price: price,
+                    phone: phone
+                },
+                success: function(response) {
+                    alert(response.success);
+                    loadCart(); // Optionally, refresh the cart or product display
+                },
+                error: function(xhr) {
+                    console.error("Error completing purchase:", xhr.responseText);
+                }
+            });
+        }
     </script>
+
     @include('cashier.modal.cashier-modal')
 @endsection

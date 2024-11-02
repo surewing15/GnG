@@ -7,20 +7,12 @@
                     <div class="nk-block-head nk-block-head-sm">
                         <div class="nk-block-between">
                             <div class="nk-block-head-content">
-                                <h3 class="nk-block-title page-title">Customers</h3>
+                                <h3 class="nk-block-title page-title">Inventory</h3>
                             </div><!-- .nk-block-head-content -->
 
                             <div class="nk-block-head-content">
                                 <ul class="nk-block-tools g-3">
                                     <li class="nk-block-tools-opt">
-                                        <!-- Buttons to trigger the modal -->
-                                        <a href="#" class="btn btn-icon btn-primary d-md-none" data-bs-toggle="modal" data-bs-target="#expensesModal">
-                                            <em class="icon ni ni-plus"></em>
-                                        </a>
-                                        <a href="#" class="btn btn-primary d-none d-md-inline-flex" data-bs-toggle="modal" data-bs-target="#expensesModal">
-                                            <em class="icon ni ni-plus"></em><span>Create Expenses</span>
-                                        </a>
-                                        @include('admin.forms.expenses-modal')
                                     </li>
                                 </ul>
                                 <div class="toggle-wrap nk-block-tools-toggle">
@@ -41,16 +33,23 @@
                                 <table class="datatable-init-export nowrap table" data-export-title="Export">
                                     <thead>
                                         <tr>
-                                            <th>Description</th>
-                                            <th>Amount</th>
+                                            <th>Item Code (SKU)</th>
+                                            <th>(Over-All Kilo's)</th>
+                                            <th>Price</th>
+                                            <th>Total</th>
                                             <th>Action</th>
+
+
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($expenses as $expense)
                                         <tr>
-                                            <td>{{ $expense->e_description }}</td>
-                                            <td>{{ number_format($expense->e_amount, 2) }}</td>
+                                            <td>Allowance</td>
+                                            <td>100.00</td>
+                                            <td>100.00</td>
+                                            <td>100.00</td>
+
+
                                             <td>
                                                 <div class="dropdown">
                                                     <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,14 +57,14 @@
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px;" data-popper-placement="bottom-end">
                                                         <ul class="link-list-opt no-bdr">
-                                                            <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit Expense</span></a></li>
-                                                            <li><a href="#"><em class="icon ni ni-trash"></em><span>Delete Expense</span></a></li>
+                                                            <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit Stocks</span></a></li>
+                                                            <li><a href="#"><em class="icon ni ni-trash"></em><span>Delete Stocks</span></a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </td>
                                         </tr>
-                                        @endforeach
+                                        <!-- Additional rows can be added here -->
                                     </tbody>
                                 </table>
                             </div>

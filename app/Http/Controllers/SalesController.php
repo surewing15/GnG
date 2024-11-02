@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class CstocksController extends Controller
+class SalesController extends Controller
 {
     public function index(){
-
-        return view('clerk.pages.stocks.index');
+        return view('cashier.pages.sales.index');
     }
 }

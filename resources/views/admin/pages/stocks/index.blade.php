@@ -8,11 +8,11 @@
             </div>
 
             <!-- Button to Open Modal -->
-            <div class="nk-block-tools-opt">
+            {{-- <div class="nk-block-tools-opt">
                 <a href="#" data-bs-toggle="modal" data-bs-target="#stockinModal" class="toggle btn btn-primary">
                     <em class="icon ni ni-plus"></em><span>Stock In</span>
                 </a>
-            </div>
+            </div> --}}
         </div>
 
         <div class="card card-bordered card-preview">
@@ -21,7 +21,9 @@
                     <thead>
                         <tr>
                             <th>Product Code (SKU)</th>
-                            <th>Stock Quantity</th>
+                            <th>Bags</th>
+                            <th>Heads</th>
+                            <th>Kilos</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -29,7 +31,9 @@
                         @foreach ($stocks as $stock)
                             <tr>
                                 <td>{{ $stock->product->product_sku ?? 'N/A' }}</td>
-                                <td>{{ $stock->total_quantity }}(kls)</td> <!-- Display the summed quantity -->
+                                <td></td>
+                                <td></td>
+                                <td>{{ $stock->total_kilos }}(kls)</td> <!-- Display the summed kilos -->
                                 <td>
                                     <div class="dropdown">
                                         <a href="#" class="dropdown-toggle btn btn-icon btn-trigger"
@@ -38,7 +42,7 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <ul class="link-list-opt no-bdr">
-                                               
+
                                                 <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit</span></a>
                                                 </li>
                                                 <li><a href="#"><em
@@ -82,10 +86,10 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <label class="form-label" for="quantity">Stock Quantity</label>
-                                <input type="number" name="stock_quantity" class="form-control" id="quantity"
+                                <label class="form-label" for="kilos">Kilos</label>
+                                <input type="number" name="stock_kilos" class="form-control" id="kilos"
                                     step="0.01">
-                                @error('stock_quantity')
+                                @error('stock_kilos')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>

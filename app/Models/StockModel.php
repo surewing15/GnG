@@ -9,14 +9,15 @@ class StockModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_stock'; // Ensure this matches the actual table name
-    protected $primaryKey = 'stock_id'; // Ensure this matches the primary key column
+    protected $table = 'tbl_stock';
+    protected $primaryKey = 'stock_id';
 
     protected $fillable = [
         'product_id',
         'stock_quantity',
-        'created_at',
-        'updated_at'
+        'stock_kilos',
+        'stock_bags',
+        'stocks_heads',
     ];
 
     public $timestamps = true;
@@ -27,11 +28,16 @@ class StockModel extends Model
         return $this->belongsTo(ProductModel::class, 'product_id', 'product_id');
     }
 
+    // Relationship with Stock History
+    public function stockHistory()
+    {
+        return $this->hasMany(StockHistoryModel::class, 'stock_id');
+    }
 
+    // Automatically create stock history upon update
     protected static function booted()
     {
         static::updated(function ($stock) {
-
             StockHistoryModel::create([
                 'stock_id' => $stock->stock_id,
                 'stock_quantity' => $stock->stock_quantity,
@@ -39,13 +45,4 @@ class StockModel extends Model
             ]);
         });
     }
-    public function stockHistory()
-    {
-        return $this->hasMany(StockHistoryModel::class, 'stock_id');
-    }
-    public function stocks()
-{
-    return $this->hasMany(StockModel::class, 'product_id', 'product_id');
-}
-
 }

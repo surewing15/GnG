@@ -19,13 +19,14 @@ class AstocksController extends Controller
     {
 
         $stocks = StockModel::with('product')
-            ->select('product_id', \DB::raw('SUM(stock_quantity) as total_quantity'))
+            ->select('product_id', \DB::raw('SUM(stock_kilos) as total_kilos'))
             ->groupBy('product_id')
             ->get();
 
         $products = ProductModel::all();
         // dd($products);
         return view('admin.pages.stocks.index', compact('stocks', 'products'));
+
     }
 
 
@@ -40,7 +41,7 @@ class AstocksController extends Controller
     {
         $validatedData = $request->validate([
             'product_id' => 'required|exists:tbl_product,product_id',
-            'stock_quantity' => 'required|numeric', // allows decimal values
+            'stock_kilos' => 'required|numeric', // allows decimal values
         ]);
 
         try {
@@ -48,7 +49,7 @@ class AstocksController extends Controller
 
             $stock = StockModel::create([
                 'product_id' => $validatedData['product_id'],
-                'stock_quantity' => $validatedData['stock_quantity'],
+                'stock_kilos' => $validatedData['stock_kilos'],
             ]);
 
             $this->forwardToHistory($stock);
@@ -73,7 +74,7 @@ class AstocksController extends Controller
             StockHistoryModel::create([
                 'stock_id' => $stock->stock_id,
                 'product_id' => $stock->product_id,
-                'stock_quantity' => $stock->stock_quantity,
+                'stock_kilos' => $stock->stock_kilos,
                'created_at' => now(),
                 'updated_at' => now(),
             ]);

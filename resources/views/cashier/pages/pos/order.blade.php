@@ -1,4 +1,4 @@
-@extends('cashier.theme.layout')
+{{-- @extends('cashier.theme.layout')
 @section('content')
 <div class="nk-content-inner">
     <div class="nk-content-body">
@@ -226,4 +226,4 @@
         </div><!-- .nk-block -->
     </div>
 </div>
-@endsection
+@endsection --}}

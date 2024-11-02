@@ -1,114 +1,219 @@
-<!-- Modal Structure with Custom Width -->
+<!-- Include html2pdf.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
-    <div class="modal-dialog custom-modal-width">
-        <div class="modal-content">
+    <div class="modal-dialog custom-receipt-width">
+        <div class="modal-content receipt-style" id="receiptContent">
             <div class="modal-header">
-                <h5 class="modal-title" id="invoiceModalLabel">Invoice</h5>
+                <h5 class="modal-title" id="invoiceModalLabel">Receipt</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <!-- Receipt Content Wrapper (Excludes Buttons) -->
+            <div class="modal-body receipt-print-content">
                 <div class="nk-block">
-                    <div class="invoice">
-                        <div class="invoice-action text-end mb-3">
-                            <a class="btn btn-icon btn-lg btn-white btn-dim btn-outline-primary" href="html/invoice-print.html" target="_blank">
-                                <em class="icon ni ni-printer-fill"></em>
-                            </a>
+                    <div class="receipt text-center">
+                        <div class="receipt-brand mb-2">
+                            <img src="./images/logo-dark.png" srcset="./images/logo-dark2x.png 2x" alt="Logo"
+                                style="max-width: 100px;">
                         </div>
-                        <div class="invoice-wrap">
-                            <div class="invoice-brand text-center mb-4">
-                                <img src="./images/logo-dark.png" srcset="./images/logo-dark2x.png 2x" alt="Logo">
-                            </div>
-                            <div class="invoice-head d-flex justify-content-between mb-4">
-                                <div class="invoice-contact">
-                                    <span class="overline-title">Invoice To</span>
-                                    <div class="invoice-contact-info">
-                                        <h4 class="title">Gregory Anderson</h4>
-                                        <ul class="list-plain">
-                                            <li><em class="icon ni ni-map-pin-fill"></em><span>House #65, 4328 Marion Street<br>Newbury, VT 05051</span></li>
-                                            <li><em class="icon ni ni-call-fill"></em><span>+012 8764 556</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="invoice-desc">
-                                    <h3 class="title">Invoice</h3>
-                                    <ul class="list-plain">
-                                        <li class="invoice-id"><span>Invoice ID</span>: <span>66K5W3</span></li>
-                                        <li class="invoice-date"><span>Date</span>: <span>26 Jan, 2020</span></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="invoice-bills">
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th class="w-150px">Item Code (SKU)</th>
-                                                <th class="w-100px">Price</th>
-                                                <th class="w-100px">Quantity</th>
-                                                <th class="w-100px">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>P1</td>
-                                                <td>$40.00</td>
-                                                <td>5</td>
-                                                <td>$200.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>p2</td>
-                                                <td>$25.00</td>
-                                                <td>1</td>
-                                                <td>$25.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>p3</td>
-                                                <td>$131.25</td>
-                                                <td>1</td>
-                                                <td>$131.25</td>
-                                            </tr>
-                                            <tr>
-                                                <td>23604094</td>
-                                                <td>$78.75</td>
-                                                <td>1</td>
-                                                <td>$78.75</td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td colspan="3" class="text-end">Total</td>
-                                                <td>$478.50</td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                    <div class="nk-notes ff-italic fs-12px text-soft">
-                                        Invoice was created on a computer and is valid without the signature and seal.
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="receipt-header text-center mb-3">
+                            <h4>Thank you for your purchase!</h4>
+                            <p class="small-text" id="customer-name">Jhong Pax</p>
+                            <p class="small-text" id="customer-phone">Phone: +012 8764 556</p>
                         </div>
+                        <div class="receipt-info text-start mb-3">
+                            <p><strong>Date:</strong> <span id="receipt-date">26 Jan, 2020</span></p>
+                            <p><strong>Receipt #ID:</strong> <span id="receipt-id">66K5W3</span></p>
+                        </div>
+                        <div class="receipt-items">
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th class="text-end">Kilos</th>
+                                        <th class="text-end">Price</th>
+                                        <th class="text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Content dynamically generated by prepareReceipt() -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="receipt-total text-end mt-3">
+                            <p><strong>Total:</strong> <span id="receipt-total">478.50</span></p>
+                        </div>
+                        <p class="receipt-footer small-text mt-2 text-muted">This receipt was generated electronically
+                            and is valid without a signature or seal.</p>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
+            <!-- Modal Footer (Buttons Only) -->
+            <div class="modal-footer no-print">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="confirmPayment()">Confirm Payment</button>
+                <button type="button" class="btn btn-info" onclick="downloadPDF()">Download PDF</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- CSS to adjust the width -->
-<style>
-    /* Set custom width for the modal dialog */
-    .custom-modal-width {
-        max-width: 80%; /* Adjust percentage or use px as desired */
+<script>
+    // Function to generate a unique Receipt ID
+    function generateReceiptID() {
+        const date = new Date();
+        const year = date.getFullYear().toString().slice(-2);
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+
+        return `${year}${month}${day}-${randomPart}`;
     }
-    /* Adjust column widths */
-    .w-150px {
-        width: 150px;
+
+    // Function to prepare the receipt with the generated Receipt ID
+    function prepareReceipt() {
+        let receiptContent = '';
+        let grandTotal = 0;
+        const receiptID = generateReceiptID();
+        const customerName = $('#cus-name').val();
+        const customerPhone = $('#cus-phone').val();
+
+        $('#cart-table-body tr').each(function() {
+            const productName = $(this).find('td:nth-child(1)').text();
+            const quantity = $(this).find('input[id^="quantity-"]').val();
+            const price = $(this).find('input[id^="price-"]').val();
+            const total = (quantity * price).toFixed(2);
+
+            grandTotal += parseFloat(total);
+
+            receiptContent += `
+                <tr>
+                    <td>${productName}</td>
+                    <td class="text-end">${quantity}</td>
+                    <td class="text-end">₱${parseFloat(price).toFixed(2)}</td>
+                    <td class="text-end">₱${total}</td>
+                </tr>
+            `;
+        });
+
+        $('#receipt-id').text(receiptID);
+        $('#receipt-date').text(new Date().toLocaleDateString());
+        $('#customer-name').text(customerName);
+        $('#customer-phone').text(`Phone: ${customerPhone}`);
+        $('.receipt-items tbody').html(receiptContent);
+        $('#receipt-total').text(`₱${grandTotal.toFixed(2)}`);
+
+        $('#invoiceModal').modal('show');
     }
-    .w-100px {
-        width: 100px;
+
+    function printReceipt() {
+        const receiptContent = document.getElementById('receiptContent').cloneNode(true);
+        const printWindow = window.open('', '_blank');
+
+        const modalFooter = receiptContent.querySelector('.modal-footer');
+        if (modalFooter) {
+            modalFooter.remove();
+        }
+
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Receipt</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+                        .receipt-style { width: 100%; margin: 0 auto; padding: 20px; }
+                        .receipt-header, .receipt-total { text-align: center; }
+                        .receipt-items, .receipt-items th, .receipt-items td {
+                            border-collapse: collapse;
+                            width: 100%;
+                            border: none;
+                            padding: 8px;
+                        }
+                        .receipt-items th { text-align: left; }
+                        .receipt-footer { text-align: center; font-size: 0.9em; color: #555; margin-top: 20px; }
+                        img { max-width: 100px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="receipt-style">${receiptContent.innerHTML}</div>
+                </body>
+            </html>
+        `);
+
+        printWindow.document.close();
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 500);
     }
-</style>
+
+    function downloadPDF() {
+        const receiptContent = document.getElementById('receiptContent').cloneNode(true);
+
+        const modalFooter = receiptContent.querySelector('.modal-footer');
+        if (modalFooter) {
+            modalFooter.remove();
+        }
+
+        const options = {
+            margin: 0.5,
+            filename: 'receipt.pdf',
+            image: {
+                type: 'jpeg',
+                quality: 0.98
+            },
+            html2canvas: {
+                scale: 2
+            },
+            jsPDF: {
+                unit: 'in',
+                format: 'a4',
+                orientation: 'portrait'
+            }
+        };
+
+        html2pdf().set(options).from(receiptContent).save();
+    }
+
+    function confirmPayment() {
+        printReceipt(); // Automatically print the receipt
+
+        const transactionData = {
+            transaction_id: $('#receipt-id').text(),
+            customer_name: $('#customer-name').text(),
+            transaction_date: $('#receipt-date').text(),
+            master_stock_id: [],
+            total_kilos: [],
+            price: $('#receipt-total').text().replace('₱', ''),
+            phone: $('#customer-phone').text().replace('Phone: ', '')
+        };
+
+        $('#cart-table-body tr').each(function() {
+            const masterStockID = $(this).data('product-id');
+            const quantity = $(this).find('input[id^="quantity-"]').val();
+
+            transactionData.master_stock_id.push(masterStockID);
+            transactionData.total_kilos.push(quantity);
+        });
+
+        $.ajax({
+            url: '/save-transaction', // Laravel route URL
+            type: 'POST',
+            data: transactionData,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token from meta tag
+            },
+            success: function(response) {
+                console.log('Transaction saved:', response);
+                alert('Payment confirmed and transaction saved.');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error saving transaction:', error);
+                alert('Failed to save transaction.');
+            }
+        });
+
+    }
+</script>

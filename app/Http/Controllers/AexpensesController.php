@@ -11,12 +11,14 @@ class AexpensesController extends Controller
         $expenses = ExpenseModel::all();
 
         // Pass the expenses data to the view
-        return view('admin.pages.expenses.index', compact('expenses'));
+        return view('cashier.pages.expenses.index', compact('expenses'));
  }
 public function store(Request $request)
 {
     // Validate the form input
     $request->validate([
+        'withdraw_by' => 'required|string|max:255',
+        'recieve_by' => 'required|string|max:255',
         'expenses_description' => 'required|string|max:255',
         'expenses_amount' => 'required|numeric|min:0',
     ]);
@@ -25,6 +27,8 @@ public function store(Request $request)
     ExpenseModel::create([
         'e_description' => $request->input('expenses_description'),
         'e_amount' => $request->input('expenses_amount'),
+        'e_withdraw_by' => $request->input('withdraw_by'),
+        'e_recieve_by' => $request->input('recieve_by'),
     ]);
 
     // Redirect or return success response

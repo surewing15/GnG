@@ -24,26 +24,26 @@
                         <h6 class="overline-title text-primary-alt">Sales Menu</h6>
                     </li>
 
-                    <li class="nk-menu-item">
+                    {{-- <li class="nk-menu-item">
                         <a href="/home" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-dashboard-fill"></em></span>
                             <span class="nk-menu-text">Dashboard</span>
                         </a>
-                    </li>
+                    </li> --}}
 
                     <li class="nk-menu-item">
-                        <a href="/clerk/stocks" class="nk-menu-link">
+                        <a href="/stocks" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-package-fill"></em></span>
                             <span class="nk-menu-text">Stocks</span>
                         </a>
                     </li>
 
-                    <li class="nk-menu-item">
+                    {{-- <li class="nk-menu-item">
                         <a href="/clerk/products" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-package-fill"></em></span>
                             <span class="nk-menu-text">Products</span>
                         </a>
-                    </li>
+                    </li> --}}
 
                 </ul>
             </div><!-- .nk-sidebar-menu -->

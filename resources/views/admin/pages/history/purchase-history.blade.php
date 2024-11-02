@@ -3,7 +3,7 @@
     <div class="nk-block nk-block-lg">
         <div class="nk-block-head">
             <div class="nk-block-head-content">
-                <h4 class="nk-block-title">Order History</h4>
+                <h4 class="nk-block-title">Purhase History</h4>
 
             </div>
         </div>

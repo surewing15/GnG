@@ -37,15 +37,56 @@
                         </a>
                     </li>
 
+                    <li class="nk-menu-heading pt-0">
+                        <h6 class="overline-title text-primary-alt">Trucking Menu</h6>
+                    </li>
 
                     <li class="nk-menu-item">
+                        <a href="/cashier/trucking" class="nk-menu-link">
+                            <span class="nk-menu-icon"><em class="icon ni ni-truck"></em></span>
+                            <span class="nk-menu-text">Trucking List</span>
+                        </a>
+                    </li>
+
+                    {{-- <li class="nk-menu-item">
+                        <a href="/cashier/trucking" class="nk-menu-link">
+                            <span class="nk-menu-icon"><em class="icon ni ni-truck"></em></span>
+                            <span class="nk-menu-text">Trucking</span>
+                        </a>
+                    </li> --}}
+
+
+
+                    {{-- <li class="nk-menu-item">
+                        <a href="/cashier/invoice" class="nk-menu-link">
+                            <span class="nk-menu-icon"><em class="icon ni ni-file-docs"></em></span>
+                            <span class="nk-menu-text">Invoice</span>
+                        </a>
+                    </li> --}}
+                    <li class="nk-menu-item">
+                        <a href="/cashier/sales" class="nk-menu-link">
+                            <span class="nk-menu-icon"><em class="icon ni ni-file-docs"></em></span>
+                            <span class="nk-menu-text">Sales</span>
+                        </a>
+                    </li>
+
+                    <li class="nk-menu-item">
+                        <a href="/cashier/expenses" class="nk-menu-link">
+                            <span class="nk-menu-icon"><em class="icon ni ni-money"></em></span>
+                            <span class="nk-menu-text">Expenses</span>
+                        </a>
+                    </li>
+
+
+
+                    {{-- <li class="nk-menu-item">
                         <a href="/cashier/order" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-file"></em></span>
                             <span class="nk-menu-text">Orders</span>
                         </a>
-                    </li>
+                    </li> --}}
 
-                    <li class="nk-menu-item has-sub">
+                    {{-- <li class="nk-menu-item has-sub">
                         <a href="javascript:void(0);" class="nk-menu-link nk-menu-toggle">
                             <span class="nk-menu-icon"><em class="icon ni ni-trend-up"></em></span>
                             <span class="nk-menu-text">Reports</span>
@@ -75,7 +116,7 @@
 
                         </ul>
                     </li>
-
+ --}}
 
                 </ul>
             </div><!-- .nk-sidebar-menu -->

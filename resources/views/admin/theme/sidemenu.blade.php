@@ -32,20 +32,33 @@
                     </li>
 
                     <li class="nk-menu-heading pt-0">
-                        <h6 class="overline-title text-primary-alt">Sales Menu</h6>
+                        <h6 class="overline-title text-primary-alt">Parties</h6>
                     </li>
-                    <li class="nk-menu-item">
+                    {{-- <li class="nk-menu-item">
                         <a href="/admin/customer" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-users-fill"></em></span>
                             <span class="nk-menu-text">Customers</span>
                         </a>
-                    </li>
+                    </li> --}}
                     <li class="nk-menu-item">
+                        <a href="{{ route('driver.index') }}" class="nk-menu-link">
+                            <span class="nk-menu-icon"><em class="icon ni ni-users-fill"></em></span>
+                            <span class="nk-menu-text">Driver</span>
+                        </a>
+                    </li>
+
+                    <li class="nk-menu-item">
+                        <a href="{{ route('helper.index') }}" class="nk-menu-link">
+                            <span class="nk-menu-icon"><em class="icon ni ni-users-fill"></em></span>
+                            <span class="nk-menu-text">Helper</span>
+                        </a>
+                    </li>
+                    {{-- <li class="nk-menu-item">
                         <a href="/admin/order" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-cc-alt2-fill"></em></span>
                             <span class="nk-menu-text">Orders</span>
                         </a>
-                    </li>
+                    </li> --}}
 
                     <li class="nk-menu-heading pt-3">
                         <h6 class="overline-title text-primary-alt">Inventory Menu</h6>
@@ -64,29 +77,25 @@
                         </ul>
                     </li>
 
-                    <li class="nk-menu-item has-sub">
-                        <a href="javascript:void(0);" class="nk-menu-link nk-menu-toggle">
+                    <li class="nk-menu-item">
+                        <a href="/admin/stocks" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-package-fill"></em></span>
                             <span class="nk-menu-text">Stocks</span>
                         </a>
-                        <ul class="nk-menu-sub">
-                            <li class="nk-menu-item">
-                                <a href="/admin/stocks" class="nk-menu-link">
-                                    <span class="nk-menu-text">All Stocks</span>
-                                </a>
-                            </li>
-                        </ul>
+
                     </li>
 
                     <li class="nk-menu-heading pt-3">
                         <h6 class="overline-title text-primary-alt">Trucking Menu</h6>
                     </li>
+
                     <li class="nk-menu-item">
-                        <a href="/admin/expenses" class="nk-menu-link">
-                            <span class="nk-menu-icon"><em class="icon ni ni-money"></em></span>
-                            <span class="nk-menu-text">Expenses</span>
+                        <a href="{{ route('truck.index')}}" class="nk-menu-link">
+                            <span class="nk-menu-icon"><em class="icon ni ni-truck"></em></span>
+                            <span class="nk-menu-text">Truck List</span>
                         </a>
                     </li>
+
 
                     <li class="nk-menu-heading pt-3">
                         <h6 class="overline-title text-primary-alt">History</h6>
@@ -98,11 +107,47 @@
                         </a>
                     </li>
                     <li class="nk-menu-item">
-                        <a href="/admin/order/history" class="nk-menu-link">
+                        <a href="/admin/purchase/history" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-history"></em></span>
-                            <span class="nk-menu-text">Order History</span>
+                            <span class="nk-menu-text">Purchase History</span>
                         </a>
                     </li>
+                    <li class="nk-menu-heading pt-3">
+                        <h6 class="overline-title text-primary-alt">REPORTS</h6>
+                    </li>
+                    <li class="nk-menu-item has-sub">
+                        <a href="javascript:void(0);" class="nk-menu-link nk-menu-toggle">
+                            <span class="nk-menu-icon"><em class="icon ni ni-trend-up"></em></span>
+                            <span class="nk-menu-text">Reports</span>
+                        </a>
+                        <ul class="nk-menu-sub">
+                            <li class="nk-menu-item">
+                                <a href="/admin/wholesale/reports" class="nk-menu-link">
+                                    <span class="nk-menu-text">Sales Wholesale</span>
+                                </a>
+                            </li>
+
+                            <li class="nk-menu-item">
+                                <a href="/admin/denomination/reports" class="nk-menu-link">
+                                    <span class="nk-menu-text">Denomination</span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="/admin/inventory/reports" class="nk-menu-link">
+                                    <span class="nk-menu-text">Inventory </span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="/admin/expenses/reports" class="nk-menu-link">
+                                    <span class="nk-menu-text">Expense Report</span>
+                                </a>
+                            </li>
+
+
+
+                        </ul>
+                    </li>
+
                 </ul>
             </div>
         </div>
