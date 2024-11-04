@@ -13,7 +13,8 @@
                             <div class="nk-block-head-content">
 
                                 <div class="toggle-wrap nk-block-tools-toggle">
-                                    <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-bs-toggle="collapse" data-bs-target="#more-options">
+                                    <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1"
+                                        data-bs-toggle="collapse" data-bs-target="#more-options">
                                         <em class="icon ni ni-more-v"></em>
                                     </a>
                                     <div class="collapse" id="more-options">
@@ -37,32 +38,37 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @foreach($expenses as $expense) --}}
-                                        <tr>
-
-                                            <td>13123</td>
-                                            <td>Ernestore</td>
-                                            <td>12.000</td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <em class="icon ni ni-more-h"></em>
-                                                    </a>
-                                                    <div class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px;" data-popper-placement="bottom-end">
-                                                        <ul class="link-list-opt no-bdr">
-                                                            <li>
-                                                                <a href="#" data-bs-toggle="modal" data-bs-target="#invoiceModal">
-                                                                    <em class="icon ni ni-file"></em><span>Invoice</span>
-                                                                </a>
-                                                            </li>
-                                                            <li><a href="#"><em class="icon ni ni-edit"></em><span>View</span></a></li>
-                                                        </ul>
+                                        @foreach ($transactions as $transaction)
+                                            <tr>
+                                                <td>{{ $transaction->receipt_id }}</td>
+                                                <td>{{ $transaction->customer_name }}</td>
+                                                <td>{{ number_format($transaction->total_amount, 2) }}</td>
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <a href="#" class="dropdown-toggle btn btn-icon btn-trigger"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <em class="icon ni ni-more-h"></em>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-end">
+                                                            <ul class="link-list-opt no-bdr">
+                                                                <li>
+                                                                    {{-- <a href="#" data-bs-toggle="modal"
+                                                                        data-bs-target="#invoiceModal">
+                                                                        <em
+                                                                            class="icon ni ni-file"></em><span>Invoice</span>
+                                                                    </a> --}}
+                                                                </li>
+                                                                <li><a href="#"><em
+                                                                            class="icon ni ni-edit"></em><span>View</span></a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        {{-- @endforeach --}}
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
+
                                 </table>
                             </div>
                         </div><!-- .card-preview -->

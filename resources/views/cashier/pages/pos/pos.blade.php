@@ -120,7 +120,7 @@
                             </thead>
                             <tbody id="cart-table-body">
                                 @foreach ($cartItems as $itemId => $item)
-                                    <tr id="cart-item-{{ $itemId }}">
+                                    <tr id="cart-item-{{ $itemId }}" data-product-id="{{ $itemId }}">
                                         <td>{{ $item['name'] }}</td>
                                         <td>
                                             <input type="number" class="form-control" id="quantity-{{ $itemId }}"
@@ -136,6 +136,9 @@
                                         </td>
                                     </tr>
                                 @endforeach
+
+
+
                             </tbody>
 
                             <tfoot>
@@ -192,9 +195,8 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        loadCart(); // Reload cart if necessary
-
-                        // Update the "In Kilos" display for the specific product without refreshing
+                        loadCart(); // Force reloading the cart to update the UI
+                        // Update the badge as needed
                         const kiloBadge = document.querySelector(`#product-kilos-${productId}`);
                         if (kiloBadge) {
                             kiloBadge.textContent = response.updatedTotalKilos > 0 ?
@@ -211,6 +213,7 @@
         }
 
 
+
         function resetCart() {
             $.ajax({
                 url: '{{ route('cart.reset') }}',
@@ -219,18 +222,17 @@
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    $('#cart-table-body').empty(); // Clear cart items from the table
-                    $('#grand-total').text('0.00'); // Reset grand total to zero
 
-                    // Clear customer details
-                    $('#cus-name').val(''); // Reset customer name
-                    $('#cus-phone').val(''); // Reset customer phone
-                    $('#cus-date').val(''); // Reset customer date
+                    $('#cart-table-body').empty();
+                    $('#grand-total').text('0.00');
+
+                    $('#cus-name').val('');
+                    $('#cus-phone').val('');
 
                     alert(response.success);
                 },
-                error: function(response) {
-                    console.error("Error resetting cart:", response);
+                error: function(xhr) {
+                    console.error("Error resetting cart:", xhr.responseText);
                 }
             });
         }
@@ -265,7 +267,7 @@
                     });
 
                     $('#cart-table-body').html(cartTableContent);
-                    $('#grand-total').text(grandTotal.toFixed(2)); // Update grand total in HTML
+                    $('#grand-total').text(grandTotal.toFixed(2));
                 },
                 error: function(xhr) {
                     console.error("Error loading cart:", xhr.responseText);
@@ -287,7 +289,7 @@
                     price: price
                 },
                 success: function(response) {
-                    loadCart(); // Refresh the cart table content including the updated grand total
+                    loadCart();
                 },
                 error: function(xhr) {
                     console.error("Error updating cart:", xhr.responseText);
@@ -298,8 +300,7 @@
         function prepareReceipt() {
             let receiptContent = '';
             let grandTotal = 0;
-            const receiptID = generateReceiptID(); // Generate a new receipt ID
-
+            const receiptID = generateReceiptID();
             $('#cart-table-body tr').each(function() {
                 const productName = $(this).find('td:nth-child(1)').text();
                 const quantity = $(this).find('input[id^="quantity-"]').val();
@@ -318,7 +319,7 @@
         `;
             });
 
-            // Set the receipt ID and other details in the modal
+
             $('.receipt-info').html(`
         <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
         <p><strong>Receipt #ID:</strong> ${receiptID}</p>
@@ -329,39 +330,20 @@
             $('#invoiceModal').modal('show');
         }
 
-        // Function to generate a unique Receipt ID
+
         function generateReceiptID() {
             const date = new Date();
-            const year = date.getFullYear().toString().slice(-2); // Last two digits of year
-            const month = ('0' + (date.getMonth() + 1)).slice(-2); // Month
-            const day = ('0' + date.getDate()).slice(-2); // Day
-            const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase(); // Random alphanumeric string
+            const year = date.getFullYear().toString().slice(-2);
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const day = ('0' + date.getDate()).slice(-2);
+            const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
 
             return `${year}${month}${day}-${randomPart}`;
         }
-
-        function completePurchase(productId, customerName, totalKilos, price, phone) {
-            $.ajax({
-                url: '{{ route('transaction.add') }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    product_id: productId,
-                    customer_name: customerName,
-                    total_kilos: totalKilos,
-                    price: price,
-                    phone: phone
-                },
-                success: function(response) {
-                    alert(response.success);
-                    loadCart(); // Optionally, refresh the cart or product display
-                },
-                error: function(xhr) {
-                    console.error("Error completing purchase:", xhr.responseText);
-                }
-            });
-        }
     </script>
+
+
+    {{-- fixing bugs soon --}}
 
     @include('cashier.modal.cashier-modal')
 @endsection

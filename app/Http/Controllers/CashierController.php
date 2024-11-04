@@ -176,50 +176,31 @@ class CashierController extends Controller
 
     public function addTransaction(Request $request)
     {
-        // Retrieve request data
-        $productId = $request->input('product_id');
-        $customerName = $request->input('customer_name');
-        $totalKilos = $request->input('total_kilos');
-        $price = $request->input('price');
-        $phone = $request->input('phone');
-        $transactionDate = now();
+        try {
+            // Retrieve request data
+            $productId = $request->input('product_id');
+            $customerName = $request->input('customer_name');
+            $totalKilosArray = $request->input('total_kilos');
+            $totalKilos = array_sum($totalKilosArray); // Sum the total kilos array
+            $price = $request->input('price');
+            $phone = $request->input('phone');
+            $transactionDate = now();
 
-        // Save the transaction in `tbl_transaction`
-        $transaction = new TransactionModel();
-        $transaction->customer_name = $customerName;
-        $transaction->transaction_date = $transactionDate;
-        $transaction->master_stock_id = $productId;
-        $transaction->total_kilos = $totalKilos;
-        $transaction->price = $price;
-        $transaction->phone = $phone;
-        $transaction->save();
+            // Save the transaction
+            $transaction = new TransactionModel();
+            $transaction->customer_name = $customerName;
+            $transaction->transaction_date = $transactionDate;
+            $transaction->total_kilos = $totalKilos; // Save summed total kilos
+            $transaction->price = $price;
+            $transaction->phone = $phone;
+            $transaction->save();
 
-        // Deduct kilos from `tbl_master_stock` across entries
-        $remainingKilosToDeduct = $totalKilos;
-        $masterStocks = MasterStockModel::where('product_id', $productId)
-            ->where('total_all_kilos', '>', 0)
-            ->orderBy('master_stock_id')
-            ->get();
-
-        foreach ($masterStocks as $masterStock) {
-            if ($remainingKilosToDeduct <= 0)
-                break;
-
-            if ($masterStock->total_all_kilos >= $remainingKilosToDeduct) {
-                $masterStock->total_all_kilos -= $remainingKilosToDeduct;
-                $masterStock->save();
-                $remainingKilosToDeduct = 0;
-            } else {
-                $remainingKilosToDeduct -= $masterStock->total_all_kilos;
-                $masterStock->total_all_kilos = 0;
-                $masterStock->save();
-            }
+            return response()->json(['success' => true, 'message' => 'Transaction added successfully.']);
+        } catch (\Exception $e) {
+            \Log::error('Failed to save transaction: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to save transaction.'], 500);
         }
-
-        return response()->json(['success' => 'Transaction added successfully.']);
     }
-
-
 
 
     public function order()

@@ -1,48 +1,58 @@
 <?php
+// app/Http/Controllers/TransactionController.php
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TransactionModel;
-use Illuminate\Support\Facades\Validator;
+use App\Models\TransactionItemModel;
+use DB;
 
 class TransactionController extends Controller
 {
-    public function store(Request $request)
-    {
-        // Validate incoming data
-        $validator = Validator::make($request->all(), [
-            'transaction_id' => 'required|string|unique:tbl_transaction,transaction_id',
-            'customer_name' => 'nullable|string|max:255', // Changed to nullable
-            'transaction_date' => 'required|date',
-            'master_stock_id' => 'required|array|min:1', // Ensure it's an array with at least one item
-            'total_kilos' => 'required|array|min:1',
-            'price' => 'required|numeric',
-            'phone' => 'nullable|string|max:15', // Changed to nullable
+
+// app/Http/Controllers/TransactionController.php
+
+public function store(Request $request)
+{
+    $request->validate([
+        'items' => 'required|array',
+        'items.*.product_id' => 'required|integer',
+        'items.*.kilos' => 'required|numeric',
+        'items.*.price_per_kilo' => 'required|numeric',
+        'items.*.total' => 'required|numeric',
+    ]);
+
+
+    DB::beginTransaction();
+
+    try {
+        $transaction = TransactionModel::create([
+            'date' => $request->input('date'),
+            'receipt_id' => $request->input('receipt_id'),
+            'customer_name' => $request->input('customer_name'),
+            'phone' => $request->input('phone'),
+            'total_amount' => $request->input('total_amount')
         ]);
 
-
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
+        foreach ($request->input('items') as $itemData) {
+            TransactionItemModel::create([
+                'transaction_id' => $transaction->transaction_id,
+                'product_id' => $itemData['product_id'],
+                'kilos' => $itemData['kilos'],
+                'price_per_kilo' => $itemData['price_per_kilo'],
+                'total' => $itemData['total']
+            ]);
         }
 
-
-        // Save transaction to database
-        try {
-            $transaction = new TransactionModel();
-            $transaction->transaction_id = $request->transaction_id;
-            $transaction->customer_name = $request->customer_name;
-            $transaction->transaction_date = $request->transaction_date;
-            $transaction->master_stock_id = json_encode($request->master_stock_id); // Store as JSON
-            $transaction->total_kilos = json_encode($request->total_kilos); // Store as JSON
-            $transaction->price = $request->price;
-            $transaction->phone = $request->phone;
-
-            $transaction->save();
-
-            return response()->json(['success' => true, 'message' => 'Transaction saved successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to save transaction.'], 500);
-        }
+        DB::commit();
+        return response()->json(['success' => true, 'message' => 'Transaction saved successfully!'], 201);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error('Failed to save transaction: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Failed to save transaction', 'details' => $e->getMessage()], 500);
     }
+}
+
+
 }

@@ -54,6 +54,8 @@ Route::middleware([
     Route::get('/admin/denomination/reports', [DenominationReportController::class, 'index']);
     Route::get('/admin/expenses/reports', [AexpensesReportController::class, 'index']);
 
+    Route::get('/total-sales', [AdminController::class, 'getTotalSales']);
+    Route::get('/sales-data', [AdminController::class, 'getSalesData']);
 
 
     // Route::get('/admin/stocks', [AstocksController::class, 'create']);
@@ -142,7 +144,7 @@ Route::middleware([
     Route::get('/cashier/trucking', [CTruckingController::class, 'index'])->name('cashier.trucking.index');
     Route::get('/cashier/trucking/create', [CTruckingController::class, 'create'])->name('cashier.trucking.create');
     Route::post('/cashier/trucking', [CTruckingController::class, 'store'])->name('cashier.trucking.store');
-    Route::get('/cashier/sales', [SalesController::class, 'index']);
+    Route::get('/cashier/sales', [SalesController::class, 'index'])->name('sales.index');
 
     // CTruckingInvoiceController route
     Route::get('/cashier/invoice', [CTruckingInvoiceController::class, 'index'])->name('cashier.invoice.index');
@@ -169,7 +171,8 @@ Route::middleware([
         Route::post('/cart/update', [CashierController::class, 'updateCart'])->name('cart.update');
         Route::post('/cart/reset', [CashierController::class, 'resetCart'])->name('cart.reset');
     });
-
+    Route::post('/transactions', [TransactionController::class, 'store']);
+    Route::post('/transaction/store', [TransactionController::class, 'store'])->name('transaction.store');
     // Route::get('/cashier/wholesales/report ',[CashierReportController::class,'wholesale']);
     // Route::get('/cashier/denomination/report ',[CashierReportController::class,'denomination']);
     // Route::get('/cashier/eggsales/report ',[CashierReportController::class,'eggsales']);

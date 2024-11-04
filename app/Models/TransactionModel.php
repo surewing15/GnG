@@ -1,27 +1,29 @@
 <?php
 
+// app/Models/Transaction.php
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TransactionModel extends Model
 {
-    protected $table = 'tbl_transaction';
+    use HasFactory;
+
+    protected $table = 'tbl_transactions';
     protected $primaryKey = 'transaction_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+
     protected $fillable = [
-        'transaction_id',
+        'date',
+        'receipt_id',
         'customer_name',
-        'transaction_date',
-        'master_stock_id',
-        'total_kilos',
-        'price',
-        'phone'
+        'phone',
+        'total_amount'
     ];
-    protected $casts = [
-        'master_stock_id' => 'array',
-        'total_kilos' => 'array',
-    ];
-    public $timestamps = false;
+
+    public function items()
+    {
+        return $this->hasMany(TransactionItemModel::class, 'transaction_id', 'transaction_id');
+    }
 }

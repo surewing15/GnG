@@ -15,6 +15,10 @@ class ExpenseModel extends Model
     protected $fillable = [
         'e_description',
         'e_amount',
+        'e_withdraw_by',
+          'e_recieve_by',
+
+
 
     ];
 }
