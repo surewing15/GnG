@@ -14,6 +14,7 @@
                     <thead>
                         <tr>
                             <th>Product Code (SKU)</th>
+                            <th>Description</th>
                             <th>Bags</th>
                             <th>Heads</th>
                             <th>Kilos</th>
@@ -29,6 +30,7 @@
                                     <input type="hidden" name="product_id" value="{{ $product->product_id }}">
 
                                     <td>{{ $product->product_sku }}</td>
+                                    <td>{{ $product->p_description }}</td>
                                     <td>
                                         <input type="number" name="bags" class="form-control" min="0"
                                             value="0" required>

@@ -40,6 +40,29 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label" for="p_description">Description</label>
+                        <div class="form-control-wrap">
+                            <select name="p_description" class="form-control" id="p_description" required>
+                                <option value="">Select Description</option>
+                                <option value="900GRMS.">900GRMS.</option>
+                                <option value="1KG.">1KG.</option>
+                                <option value="1.1KGS.">1.1KGS.</option>
+                                <option value="1.2KGS">1.2KGS</option>
+                                <option value="1.3-1.4KGS.">1.3-1.4KGS.</option>
+                                <option value="800GRMS.">800GRMS.</option>
+                                <option value="700GRMS.">700GRMS.</option>
+                                <option value="ASSRTD">ASSRTD</option>
+                                <option value="600GRMS">600GRMS</option>
+                                <option value="PCK.">PCK.</option>
+                                <option value="KG.">KG.</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 @error('p_sku')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -48,6 +71,11 @@
                 @error('p_category')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
+
+                @error('p_description')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
+
 
                 <!-- Product Image Upload -->
                 <div class="col-12">

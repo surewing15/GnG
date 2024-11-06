@@ -112,7 +112,7 @@
                             <span class="nk-menu-text">Purchase History</span>
                         </a>
                     </li>
-                    <li class="nk-menu-heading pt-3">
+                    {{-- <li class="nk-menu-heading pt-3">
                         <h6 class="overline-title text-primary-alt">REPORTS</h6>
                     </li>
                     <li class="nk-menu-item has-sub">
@@ -146,7 +146,7 @@
 
 
                         </ul>
-                    </li>
+                    </li> --}}
 
                 </ul>
             </div>

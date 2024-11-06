@@ -25,7 +25,7 @@
                         <tr>
                             <th>Product Image</th>
                             <th>Product Code (SKU)</th>
-                            {{-- <th>Product Name</th> --}}
+                            <th>Description</th>
                             {{-- <th>Weight</th> --}}
                             <th>Date</th>
                             <th>Action</th>
@@ -44,7 +44,7 @@
                                 </td>
 
                                 <td>{{ $product->product_sku }}</td>
-                                {{-- <td>{{ $product->product_name }}</td> --}}
+                                <td>{{ $product->p_description }}</td>
                                 {{-- <td>{{ $product->weight }}(kls)</td> --}}
                                 <td>{{ $product->created_at->format('F j, Y') }}</td>
                                 <td>

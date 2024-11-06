@@ -88,27 +88,21 @@
         </div>
 
         <div class="col-md-5">
-            <div class="card">
+            <!-- First Card -->
+            <div class="card mb-4">
                 <div class="card-body">
                     <div class="form-group">
-                        <label class="form-label" for="full-name">Customer Name</label>
+                        <label class="form-label" for="cus-name">Customer Name</label>
                         <div class="form-control-wrap">
                             <input type="text" class="form-control" id="cus-name">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="full-name">Phone Number</label>
+                        <label class="form-label" for="cus-phone">Phone Number</label>
                         <div class="form-control-wrap">
                             <input type="text" class="form-control" id="cus-phone">
                         </div>
                     </div>
-                    {{-- <div class="form-group">
-                        <label class="form-label" for="full-name">Date</label>
-                        <div class="form-control-wrap">
-                            <input type="date" class="form-control" id="cus-date">
-                        </div>
-                    </div> --}}
-
                     <div class="table-responsive mt-3">
                         <table class="table table-striped">
                             <thead>
@@ -124,64 +118,69 @@
                                         <td>{{ $item['name'] }}</td>
                                         <td>
                                             <input type="number" class="form-control" id="quantity-{{ $itemId }}"
-                                                value="{{ $item['quantity'] }}"
-                                                style="width: 80px; padding: 5px; text-align: center;"
-                                                onchange="updateCart({{ $itemId }})">
+                                                   value="{{ $item['quantity'] }}"
+                                                   style="width: 80px; padding: 5px; text-align: center;"
+                                                   onchange="updateCart({{ $itemId }})">
                                         </td>
                                         <td>
                                             <input type="number" class="form-control" id="price-{{ $itemId }}"
-                                                value="{{ $item['price'] }}"
-                                                style="width: 100px; padding: 5px; text-align: right;"
-                                                onchange="updateCart({{ $itemId }})">
+                                                   value="{{ $item['price'] }}"
+                                                   style="width: 100px; padding: 5px; text-align: right;"
+                                                   onchange="updateCart({{ $itemId }})">
                                         </td>
                                     </tr>
                                 @endforeach
-
-
-
                             </tbody>
-
                             <tfoot>
                                 <tr>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="2" class="text-end"><strong>Grand Total:</strong></td>
-                                            <td id="grand-total"><strong>{{ number_format($grandTotal, 2) }}</strong></td>
-                                        </tr>
-                                    </tfoot>
-
+                                    <td colspan="2" class="text-end"><strong>Grand Total:</strong></td>
+                                    <td id="grand-total"><strong>&#8369; {{ number_format($grandTotal, 2) }}</strong></td>
                                 </tr>
+
                             </tfoot>
-
-
-
                         </table>
                     </div>
-
-                    <div class="table-responsive mt-3">
-                        <table class="table table-striped">
-                            <tbody id="cart-table-body">
-
-                            </tbody>
-                        </table>
-                    </div>
-
-
-
                     <div class="d-flex justify-content-center flex-wrap mb-0 mt-3">
                         <button onclick="resetCart()" type="button" class="btn btn-danger me-3">
                             <i class="bi bi-x"></i> Reset
                         </button>
-
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                            data-bs-target="#invoiceModal" onclick="prepareReceipt()">Invoice</button>
-
-
-
+                                data-bs-target="#invoiceModal" onclick="prepareReceipt()">Invoice</button>
                     </div>
                 </div>
             </div>
+
+            <!-- Second Card (Underneath the First) -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Legend</h5>
+                    <table class="table">
+                        <thead class="table-light">
+                            <tr>
+
+                                <th scope="col">SKU</th>
+                                <th scope="col">Description</th>
+
+                            </tr>
+                        </thead>
+                        @foreach ($products as $data)
+                        <tbody>
+                            <tr>
+                                <th>{{ $data->product_sku }}</th>
+                                <td>{{ $data->p_description }}</td>
+
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
         </div>
+
+
+
+
     </div>
     <script>
         function addToCart(productId, kilos) {
@@ -191,7 +190,8 @@
                 data: {
                     _token: '{{ csrf_token() }}',
                     product_id: productId,
-                    kilos: kilos
+                    kilos: kilos,
+
                 },
                 success: function(response) {
                     if (response.success) {
@@ -343,7 +343,7 @@
     </script>
 
 
-    {{-- fixing bugs soon --}}
+
 
     @include('cashier.modal.cashier-modal')
 @endsection

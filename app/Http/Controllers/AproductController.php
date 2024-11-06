@@ -28,6 +28,7 @@ class AproductController extends Controller
             'p_sku' => 'required|string|max:100',
             'p_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category' => 'required|string', // Ensure 'category' is required and a string
+            'p_description' => 'required|string|max:100',
         ]);
 
         // Handle image upload if provided
@@ -40,6 +41,7 @@ class AproductController extends Controller
         $product = new ProductModel();
         $product->product_sku = $validatedData['p_sku'];
         $product->category = $validatedData['category']; // Save the selected category
+        $product->p_description = $validatedData['p_description'];
         $product->img = $imagePath; // Store image path or null if no image uploaded
         $product->save();
 
