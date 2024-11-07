@@ -19,29 +19,34 @@ class AdminController extends Controller
         if (Auth::check()) {
             $user_type = Auth::user()->usertype;
 
+            $totalSales = $this->getTotalSalesData(); // Total sales
+            $salesData = $this->getSalesDataArray(); // Sales data array
+            $expenses = ExpenseModel::all(); // Get all expense records
 
-            $totalSales = $this->getTotalSalesData();
-            $salesData = $this->getSalesDataArray();
-            $expenses = ExpenseModel::all();
+            $totalExpenses = $expenses->sum('e_amount'); // Sum of all expenses
+
+            // Calculate total cash by subtracting expenses from total sales
+            $totalCash = $totalSales - $totalExpenses;
 
             $customers = TransactionModel::select('customer_name', 'receipt_id', 'total_amount')->distinct()->get();
             $totalCustomerCount = TransactionModel::count('customer_name');
 
-           $lastWeekStart = Carbon::now()->subWeek()->startOfWeek();
+            $lastWeekStart = Carbon::now()->subWeek()->startOfWeek();
             $lastWeekEnd = Carbon::now()->subWeek()->endOfWeek();
             $lastWeekCustomerCount = TransactionModel::whereBetween('created_at', [$lastWeekStart, $lastWeekEnd])->count('customer_name');
-
 
             $percentageChange = $lastWeekCustomerCount ? (($totalCustomerCount - $lastWeekCustomerCount) / $lastWeekCustomerCount) * 100 : 0;
 
             if ($user_type == 'admin') {
                 return view('admin.index', [
                     'totalSales' => $totalSales,
+                    'totalExpenses' => $totalExpenses,
+                    'totalCash' => $totalCash, // Pass total cash to the view
                     'salesData' => $salesData,
-                    'expenses' => $expenses,
+                    'expenses' => $expenses, // Pass expenses to the view
                     'totalCustomerCount' => $totalCustomerCount,
                     'percentageChange' => number_format($percentageChange, 2),
-                    'customers'=> $customers,
+                    'customers' => $customers,
                 ]);
             } else if ($user_type == 'user') {
                 return view('user.index');
@@ -56,6 +61,7 @@ class AdminController extends Controller
             return redirect('/login')->with('error', 'Please log in first');
         }
     }
+
 
 
 

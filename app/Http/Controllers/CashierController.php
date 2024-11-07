@@ -125,37 +125,53 @@ class CashierController extends Controller
         return response()->json(['cart' => $cart]);
     }
 
-    public function resetCart()
+    public function resetCart(Request $request)
     {
-        // Retrieve the cart from session
-        $cart = session()->get('cart', []);
+        try {
+            \DB::beginTransaction();
 
-        // Restore stock for each product in the cart
-        foreach ($cart as $productId => $item) {
-            $quantityToRestore = $item['quantity'];
+            $isPaymentConfirmed = $request->boolean('isPaymentConfirmed', false);
+            $cart = session()->get('cart', []);
 
-            // Find all stock entries for this product_id
-            $masterStocks = MasterStockModel::where('product_id', $productId)
-                ->orderBy('master_stock_id')
-                ->get();
+            // Only restore stock if this is a manual reset (not after payment)
+            if (!$isPaymentConfirmed) {
+                foreach ($cart as $productId => $item) {
+                    $quantityToRestore = $item['quantity'];
 
-            foreach ($masterStocks as $masterStock) {
-                if ($quantityToRestore <= 0)
-                    break;
+                    $masterStocks = MasterStockModel::where('product_id', $productId)
+                        ->orderBy('master_stock_id')
+                        ->get();
 
-                // Restore stock by distributing the quantity across entries
-                $masterStock->total_all_kilos += $quantityToRestore;
-                $masterStock->save();
-                $quantityToRestore = 0;  // Ensure restoration is applied only once
+                    foreach ($masterStocks as $masterStock) {
+                        if ($quantityToRestore <= 0) break;
+
+                        $masterStock->total_all_kilos += $quantityToRestore;
+                        $masterStock->save();
+                        $quantityToRestore = 0;
+                    }
+                }
             }
+
+            // Clear the cart session
+            session()->forget('cart');
+
+            \DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cart has been reset successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('Error resetting cart: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error resetting cart'
+            ], 500);
         }
-
-        // Clear the cart from session
-        session()->forget('cart');
-
-        return response()->json(['success' => 'Cart has been reset and stock has been restored successfully']);
     }
-
 
     public function update(Request $request)
     {
@@ -177,31 +193,44 @@ class CashierController extends Controller
     public function addTransaction(Request $request)
     {
         try {
-            // Retrieve request data
-            $productId = $request->input('product_id');
-            $customerName = $request->input('customer_name');
-            $totalKilosArray = $request->input('total_kilos');
-            $totalKilos = array_sum($totalKilosArray); // Sum the total kilos array
-            $price = $request->input('price');
-            $phone = $request->input('phone');
-            $transactionDate = now();
+            \DB::beginTransaction();
 
-            // Save the transaction
+            // Create the transaction
             $transaction = new TransactionModel();
-            $transaction->customer_name = $customerName;
-            $transaction->transaction_date = $transactionDate;
-            $transaction->total_kilos = $totalKilos; // Save summed total kilos
-            $transaction->price = $price;
-            $transaction->phone = $phone;
+            $transaction->receipt_id = $request->receipt_id;
+            $transaction->customer_name = $request->customer_name;
+            $transaction->phone = $request->phone;
+            $transaction->transaction_date = $request->date;
+            $transaction->total_amount = $request->total_amount;
             $transaction->save();
 
-            return response()->json(['success' => true, 'message' => 'Transaction added successfully.']);
+            // Save transaction items
+            foreach ($request->items as $item) {
+                $transaction->items()->create([
+                    'product_id' => $item['product_id'],
+                    'kilos' => $item['kilos'],
+                    'price_per_kilo' => $item['price_per_kilo'],
+                    'total' => $item['total']
+                ]);
+            }
+
+            \DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Transaction saved successfully'
+            ]);
+
         } catch (\Exception $e) {
-            \Log::error('Failed to save transaction: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Failed to save transaction.'], 500);
+            \DB::rollBack();
+            \Log::error('Transaction failed: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to save transaction'
+            ], 500);
         }
     }
-
 
     public function order()
     {
@@ -212,10 +241,10 @@ class CashierController extends Controller
         $productId = $request->input('product_id');
         $kilos = $request->input('total_kilos');
 
-        // Fetch the product
+
         $product = ProductModel::find($productId);
 
-        // Deduct kilos from product stock
+
         $product->total_kilos -= $kilos;
         $product->save();
 
@@ -250,6 +279,59 @@ class CashierController extends Controller
         return response()->json(['error' => 'Item not found in cart'], 404);
     }
 
+    public function confirmPayment(Request $request)
+    {
+        try {
+            // Start database transaction
+            \DB::beginTransaction();
 
+            $cart = session()->get('cart', []);
+            $receiptId = $request->input('receipt_id');
+            $customerName = $request->input('customer_name');
+            $phone = $request->input('phone');
+            $totalAmount = $request->input('total_amount');
+            $items = $request->input('items');
+            $date = $request->input('date');
+
+            // Create the transaction record
+            $transaction = TransactionModel::create([
+                'receipt_id' => $receiptId,
+                'customer_name' => $customerName,
+                'phone' => $phone,
+                'total_amount' => $totalAmount,
+                'transaction_date' => $date,
+            ]);
+
+            // Process each item
+            foreach ($items as $item) {
+                // Stock has already been deducted during add to cart
+                // Just need to record the transaction details
+                $transaction->items()->create([
+                    'product_id' => $item['product_id'],
+                    'kilos' => $item['kilos'],
+                    'price_per_kilo' => $item['price_per_kilo'],
+                    'total' => $item['total']
+                ]);
+            }
+
+            // Clear the cart without restoring stock
+            $this->resetCart($request, true);
+
+            \DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Transaction completed successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('Transaction failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaction failed. Please try again.'
+            ], 500);
+        }
+    }
 
 }

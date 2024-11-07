@@ -32,18 +32,22 @@
                                         </div>
                                     </div>
                                     <div class="data">
-                                        <div class="amount" id="total-sales-amount">₱{{ number_format($totalSales, 2) }}</div>
+                                        <div class="amount" id="total-sales-amount">₱{{ number_format($totalSales, 2) }}
+                                        </div>
                                         <div class="info">
-                                            <strong>₱{{ number_format($salesData['last_month_sales'], 2) }}</strong> in last month
+                                            <strong>₱{{ number_format($salesData['last_month_sales'], 2) }}</strong> in last
+                                            month
                                         </div>
                                     </div>
                                     <div class="data">
                                         <h6 class="sub-title">This week so far</h6>
                                         <div class="data-group">
-                                            <div class="amount" id="this-week-sales">₱{{ number_format($salesData['this_week_sales'], 2) }}</div>
+                                            <div class="amount" id="this-week-sales">
+                                                ₱{{ number_format($salesData['this_week_sales'], 2) }}</div>
                                             <div class="info text-end">
                                                 <span class="change up text-danger" id="percentage-change">
-                                                    <em class="icon ni ni-arrow-long-up"></em>{{ number_format($salesData['percentage_change'], 2) }}%
+                                                    <em
+                                                        class="icon ni ni-arrow-long-up"></em>{{ number_format($salesData['percentage_change'], 2) }}%
                                                 </span><br>
                                                 <span>vs. last week</span>
                                             </div>
@@ -51,7 +55,8 @@
                                     </div>
                                 </div>
                                 <div class="nk-ecwg1-ck">
-                                    <canvas class="ecommerce-line-chart-s1 chartjs-render-monitor" id="totalSales" width="479" height="110"></canvas>
+                                    <canvas class="ecommerce-line-chart-s1 chartjs-render-monitor" id="totalSales"
+                                        width="479" height="110"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +82,8 @@
                                                     <div class="amount">{{ $totalCustomerCount }}</div>
                                                     <div class="info text-end">
                                                         <span class="change up text-danger">
-                                                            <em class="icon ni ni-arrow-long-up"></em>{{ $percentageChange }}%
+                                                            <em
+                                                                class="icon ni ni-arrow-long-up"></em>{{ $percentageChange }}%
                                                         </span><br>
                                                         <span>vs. last week</span>
                                                     </div>
@@ -85,7 +91,8 @@
                                             </div>
                                         </div>
                                         <div class="nk-ecwg3-ck">
-                                            <canvas class="ecommerce-line-chart-s1 chartjs-render-monitor" id="totalCustomers" width="1054" height="132"></canvas>
+                                            <canvas class="ecommerce-line-chart-s1 chartjs-render-monitor"
+                                                id="totalCustomers" width="1054" height="132"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -93,41 +100,44 @@
                         </div>
                     </div>
 
-<!-- Less Card -->
-<div class="col-xxl-3 col-md-6">
-    <div class="card h-100">
-        <div class="card-inner">
-            <div class="card-title-group mb-2">
-                <div class="card-title">
-                    <h6 class="title">Less</h6>
-                </div>
-            </div>
-            <ul class="nk-store-statistics">
-                <li class="item">
-                    <div class="info">
-                        <div class="title">Deposit Truchef Partial</div>
-                        <div class="count">1,795</div>
+                    <!-- Less Card -->
+                    <div class="col-xxl-3 col-md-6">
+                        <div class="card h-100">
+                            <div class="card-inner">
+                                <div class="card-title-group mb-2">
+                                    <div class="card-title">
+                                        <h6 class="title">Less</h6>
+                                    </div>
+                                </div>
+                                <ul class="nk-store-statistics">
+
+
+                                    <li class="item">
+                                        <div class="info">
+                                            <div class="title">Total Sales</div>
+                                            <div class="count">{{ number_format($totalSales, 2) }}</div>
+                                        </div>
+                                        <em class="icon bg-purple-dim ni ni-growth"></em>
+                                    </li>
+                                    <li class="item">
+                                        <div class="info">
+                                            <div class="title">Total Expenses</div>
+                                            <div class="count">{{ number_format($totalExpenses, 2) }}</div>
+                                        </div>
+                                        <em class="icon bg-primary-dim ni ni-bag"></em>
+                                    </li>
+                                    <li class="item">
+                                        <div class="info">
+                                            <div class="title">Total Cash</div>
+                                            <div class="count">{{ number_format($totalCash, 2) }}</div>
+                                        </div>
+                                        <em class="icon bg-purple-dim ni ni-money"></em>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <em class="icon bg-primary-dim ni ni-bag"></em>
-                </li>
-                <li class="item">
-                    <div class="info">
-                        <div class="title">Credit/Bal</div>
-                        <div class="count">674</div>
-                    </div>
-                    <em class="icon bg-pink-dim ni ni-box"></em>
-                </li>
-                <li class="item">
-                    <div class="info">
-                        <div class="title">Total Less</div>
-                        <div class="count">10200</div>
-                    </div>
-                    <em class="icon bg-purple-dim ni ni-server"></em>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
 
 
                     <!-- Expenses Card -->

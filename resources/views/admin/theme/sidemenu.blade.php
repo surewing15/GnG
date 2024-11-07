@@ -112,29 +112,29 @@
                             <span class="nk-menu-text">Purchase History</span>
                         </a>
                     </li>
-                    {{-- <li class="nk-menu-heading pt-3">
+                    <li class="nk-menu-heading pt-3">
                         <h6 class="overline-title text-primary-alt">REPORTS</h6>
                     </li>
                     <li class="nk-menu-item has-sub">
-                        <a href="javascript:void(0);" class="nk-menu-link nk-menu-toggle">
+                        <a href="" class="nk-menu-link nk-menu-toggle">
                             <span class="nk-menu-icon"><em class="icon ni ni-trend-up"></em></span>
                             <span class="nk-menu-text">Reports</span>
                         </a>
                         <ul class="nk-menu-sub">
-                            <li class="nk-menu-item">
+                            {{-- <li class="nk-menu-item">
                                 <a href="/admin/wholesale/reports" class="nk-menu-link">
                                     <span class="nk-menu-text">Sales Wholesale</span>
                                 </a>
-                            </li>
+                            </li> --}}
 
-                            <li class="nk-menu-item">
+                            {{-- <li class="nk-menu-item">
                                 <a href="/admin/denomination/reports" class="nk-menu-link">
                                     <span class="nk-menu-text">Denomination</span>
                                 </a>
-                            </li>
+                            </li> --}}
                             <li class="nk-menu-item">
                                 <a href="/admin/inventory/reports" class="nk-menu-link">
-                                    <span class="nk-menu-text">Inventory </span>
+                                    <span class="nk-menu-text">Stocks Report </span>
                                 </a>
                             </li>
                             <li class="nk-menu-item">
@@ -146,7 +146,7 @@
 
 
                         </ul>
-                    </li> --}}
+                    </li>
 
                 </ul>
             </div>

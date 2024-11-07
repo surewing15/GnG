@@ -1,5 +1,6 @@
 @extends('cashier.theme.layout')
 @section('content')
+    {{-- cashier pos --}}
     <div class="row">
 
         <div class="col-md-7">
@@ -118,15 +119,15 @@
                                         <td>{{ $item['name'] }}</td>
                                         <td>
                                             <input type="number" class="form-control" id="quantity-{{ $itemId }}"
-                                                   value="{{ $item['quantity'] }}"
-                                                   style="width: 80px; padding: 5px; text-align: center;"
-                                                   onchange="updateCart({{ $itemId }})">
+                                                value="{{ $item['quantity'] }}"
+                                                style="width: 80px; padding: 5px; text-align: center;"
+                                                onchange="updateCart({{ $itemId }})">
                                         </td>
                                         <td>
                                             <input type="number" class="form-control" id="price-{{ $itemId }}"
-                                                   value="{{ $item['price'] }}"
-                                                   style="width: 100px; padding: 5px; text-align: right;"
-                                                   onchange="updateCart({{ $itemId }})">
+                                                value="{{ $item['price'] }}"
+                                                style="width: 100px; padding: 5px; text-align: right;"
+                                                onchange="updateCart({{ $itemId }})">
                                         </td>
                                     </tr>
                                 @endforeach
@@ -145,7 +146,7 @@
                             <i class="bi bi-x"></i> Reset
                         </button>
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                                data-bs-target="#invoiceModal" onclick="prepareReceipt()">Invoice</button>
+                            data-bs-target="#invoiceModal" onclick="prepareReceipt()">Invoice</button>
                     </div>
                 </div>
             </div>
@@ -164,13 +165,13 @@
                             </tr>
                         </thead>
                         @foreach ($products as $data)
-                        <tbody>
-                            <tr>
-                                <th>{{ $data->product_sku }}</th>
-                                <td>{{ $data->p_description }}</td>
+                            <tbody>
+                                <tr>
+                                    <th>{{ $data->product_sku }}</th>
+                                    <td>{{ $data->p_description }}</td>
 
-                            </tr>
-                            @endforeach
+                                </tr>
+                        @endforeach
                         </tbody>
                     </table>
 
@@ -184,34 +185,62 @@
     </div>
     <script>
         function addToCart(productId, kilos) {
+            // Show loading state on the button
+            const addButton = $(`button[onclick="addToCart(${productId}, ${kilos})"]`);
+            const originalText = addButton.text();
+            addButton.prop('disabled', true);
+            addButton.text('Adding...');
+
             $.ajax({
                 url: '{{ route('cart.add') }}',
                 method: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
-                    product_id: productId,
-                    kilos: kilos,
-
+                    product_id: productId
                 },
                 success: function(response) {
                     if (response.success) {
-                        loadCart(); // Force reloading the cart to update the UI
-                        // Update the badge as needed
+                        // Update the stock display
                         const kiloBadge = document.querySelector(`#product-kilos-${productId}`);
                         if (kiloBadge) {
-                            kiloBadge.textContent = response.updatedTotalKilos > 0 ?
-                                `${response.updatedTotalKilos} In Kilos` : 'Out of Kilos';
-                            kiloBadge.classList.toggle('bg-success', response.updatedTotalKilos > 0);
-                            kiloBadge.classList.toggle('bg-danger', response.updatedTotalKilos <= 0);
+                            const updatedKilos = response.updatedTotalKilos;
+                            kiloBadge.textContent = updatedKilos > 0 ?
+                                `${updatedKilos} In Kilos` : 'Out of Kilos';
+                            kiloBadge.className = `badge ${updatedKilos > 0 ? 'bg-success' : 'bg-danger'}`;
                         }
+
+                        // Reload the cart display
+                        loadCart();
+
+                        // Show success message
+                        toastr.success('Product added to cart successfully');
                     }
                 },
                 error: function(xhr) {
-                    console.error("Error adding product to cart:", xhr.responseText);
+                    let errorMessage = 'Error adding product to cart';
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
+                    }
+                    toastr.error(errorMessage);
+
+                    // Update the stock display in case it changed
+                    if (xhr.responseJSON && xhr.responseJSON.updatedTotalKilos !== undefined) {
+                        const kiloBadge = document.querySelector(`#product-kilos-${productId}`);
+                        if (kiloBadge) {
+                            const updatedKilos = xhr.responseJSON.updatedTotalKilos;
+                            kiloBadge.textContent = updatedKilos > 0 ?
+                                `${updatedKilos} In Kilos` : 'Out of Kilos';
+                            kiloBadge.className = `badge ${updatedKilos > 0 ? 'bg-success' : 'bg-danger'}`;
+                        }
+                    }
+                },
+                complete: function() {
+                    // Reset button state
+                    addButton.prop('disabled', false);
+                    addButton.text(originalText);
                 }
             });
         }
-
 
 
         function resetCart() {

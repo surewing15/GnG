@@ -1,4 +1,3 @@
-<!-- Include html2pdf.js Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 
 <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
@@ -52,7 +51,7 @@
 
             <div class="modal-footer no-print">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" onclick="confirmPayment()"  onclick="resetCart()">Confirm Payment</button>
+                <button type="button" class="btn btn-success" onclick="confirmPayment()">Confirm Payment</button>
                 <button type="button" class="btn btn-primary" onclick="printReceipt()">Print</button>
                 <button type="button" class="btn btn-info" onclick="downloadPDF()">Download PDF</button>
             </div>
@@ -61,196 +60,256 @@
 </div>
 
 <script>
-function generateReceiptID() {
-    return Math.random().toString(36).substr(2, 9).toUpperCase(); // Example receipt ID generation
-}
+    function confirmPayment() {
+        const receiptID = document.getElementById('receiptID').innerText;
+        const customerName = document.querySelector('.receipt-header .small-text:nth-child(2)').innerText;
+        const customerPhone = document.querySelector('.receipt-header .small-text:nth-child(3)').innerText.replace(
+            'Phone: ', '');
+        const date = new Date().toISOString().split('T')[0];
+        const totalAmount = parseFloat($('#grandTotal').text().replace('₱', ''));
 
-function prepareReceipt() {
-    const receiptID = generateReceiptID();
-    document.getElementById('receiptID').innerText = receiptID;
+        let items = [];
+        $('#cart-table-body tr').each(function() {
+            const rowId = $(this).attr('id');
+            const productId = rowId ? rowId.replace('cart-item-', '') : null;
+            const quantity = parseFloat($(this).find('input[id^="quantity-"]').val());
+            const price = parseFloat($(this).find('input[id^="price-"]').val());
+            const total = quantity * price;
 
-    const date = new Date().toLocaleDateString(); // Format date to be more readable
-    document.getElementById('receiptDate').innerText = date;
+            if (productId && !isNaN(quantity) && !isNaN(price) && !isNaN(total)) {
+                items.push({
+                    product_id: parseInt(productId),
+                    kilos: quantity,
+                    price_per_kilo: price,
+                    total: total
+                });
+            }
+        });
 
-    const customerName = document.getElementById('cus-name').value || 'Unknown Customer';
-    const customerPhone = document.getElementById('cus-phone').value || 'N/A';
+        if (items.length === 0) {
+            alert("No items found for the transaction. Please add items to proceed.");
+            return;
+        }
 
-    document.querySelector('.receipt-header .small-text:nth-child(2)').innerText = customerName;
-    document.querySelector('.receipt-header .small-text:nth-child(3)').innerText = `Phone: ${customerPhone}`;
+        $.ajax({
+            url: '/transactions',
+            type: 'POST',
+            data: {
+                date: date,
+                receipt_id: receiptID,
+                customer_name: customerName,
+                phone: customerPhone,
+                total_amount: totalAmount,
+                items: items,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                // First print the receipt
+                printReceipt();
 
-    let receiptContent = '';
-    let grandTotal = 0;
+                // Close the modal
+                $('#invoiceModal').modal('hide');
 
-    $('#cart-table-body tr').each(function() {
-        const productName = $(this).find('td:nth-child(1)').text();
-        const quantity = parseFloat($(this).find('input[id^="quantity-"]').val()) || 0;
-        const price = parseFloat($(this).find('input[id^="price-"]').val()) || 0;
-        const total = (quantity * price).toFixed(2);
+                // Clear the cart data from the session and UI
+                $.ajax({
+                    url: '/cart/reset',
+                    method: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        isPaymentConfirmed: true
+                    },
+                    success: function() {
+                        // Clear UI elements
+                        clearCartUI();
 
-        grandTotal += parseFloat(total);
-
-        receiptContent += `
-            <tr>
-                <td>${productName}</td>
-                <td class="text-end">${quantity}</td>
-                <td class="text-end">₱${price.toFixed(2)}</td>
-                <td class="text-end">₱${total}</td>
-            </tr>
-        `;
-    });
-
-    $('.receipt-items tbody').html(receiptContent);
-    $('#grandTotal').text(`₱${grandTotal.toFixed(2)}`);
-
-    $('#invoiceModal').modal('show');
-}
-
-function printReceipt() {
-    const receiptContent = document.getElementById('receiptContent').cloneNode(true);
-    const printWindow = window.open('', '_blank');
-
-    const modalFooter = receiptContent.querySelector('.modal-footer');
-    if (modalFooter) {
-        modalFooter.remove();
+                        // Show success message and reload page
+                        alert('Payment confirmed and transaction saved successfully.');
+                        window.location.href = window.location.pathname; // Force a clean reload
+                    },
+                    error: function() {
+                        alert('Error clearing cart. Please refresh the page.');
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Failed to save transaction:', error);
+                alert('Failed to save transaction. Please try again.');
+            }
+        });
     }
 
-    printWindow.document.write(`
-        <html>
-            <head>
-                <title>Print Receipt</title>
-                <style>
-                    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-                    .receipt-style { width: 100%; margin: 0 auto; padding: 20px; }
-                    .receipt-header, .receipt-total { text-align: center; }
-                    .receipt-items, .receipt-items th, .receipt-items td {
-                        border-collapse: collapse;
-                        width: 100%;
-                        border: none;
-                        padding: 8px;
-                    }
-                    .receipt-items th { text-align: left; }
-                    .receipt-footer { text-align: center; font-size: 0.9em; color: #555; margin-top: 20px; }
-                    img { max-width: 100px; }
-                </style>
-            </head>
-            <body>
-                <div class="receipt-style">${receiptContent.innerHTML}</div>
-            </body>
-        </html>
-    `);
+    // New function to handle UI clearing
+    function clearCartUI() {
+        // Clear cart table
+        $('#cart-table-body').empty();
 
-    printWindow.document.close();
+        // Reset grand total
+        $('#grand-total').html('<strong>₱0.00</strong>');
 
-    setTimeout(() => {
-        printWindow.print();
-        printWindow.close();
-    }, 500);
-}
+        // Clear customer information
+        $('#cus-name').val('');
+        $('#cus-phone').val('');
 
-// Update the confirmPayment function to display ₱ sign and reset data after payment
-function confirmPayment() {
-    const receiptID = generateReceiptID();
-    const customerName = document.querySelector('.receipt-header .small-text:nth-child(2)').innerText;
-    const customerPhone = document.querySelector('.receipt-header .small-text:nth-child(3)').innerText.replace('Phone: ', '');
-    const date = new Date().toISOString().split('T')[0];
-    const totalAmount = parseFloat($('.receipt-total p').text().replace('Total: ₱', ''));
+        // Clear any error messages or notifications
+        $('.alert').remove();
+    }
 
-    let items = [];
-    $('#cart-table-body tr').each(function() {
-        const product_id = $(this).data('product-id');
-        const kilos = parseFloat($(this).find('input[id^="quantity-"]').val());
-        const pricePerKilo = parseFloat($(this).find('input[id^="price-"]').val());
-        const total = kilos * pricePerKilo;
-
-        if (product_id && !isNaN(kilos) && !isNaN(pricePerKilo) && !isNaN(total)) {
-            items.push({
-                product_id: product_id,
-                kilos: kilos,
-                price_per_kilo: pricePerKilo,
-                total: total
+    // Update the reset cart function
+    function resetCart() {
+        if (confirm('Are you sure you want to reset the cart?')) {
+            $.ajax({
+                url: '/cart/reset',
+                method: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    isPaymentConfirmed: false
+                },
+                success: function(response) {
+                    clearCartUI();
+                    window.location.reload(); // Reload to refresh product stock display
+                },
+                error: function(xhr) {
+                    console.error("Error resetting cart:", xhr.responseText);
+                    alert('Error resetting cart. Please try again.');
+                }
             });
         }
-    });
-
-    function downloadPDF() {
-    // Define the element you want to capture
-    const element = document.getElementById('receiptContent');
-
-    // Define PDF options
-    const options = {
-        margin:       0.5, // Margin in inches
-        filename:     `Receipt_${new Date().toLocaleDateString().replace(/\//g, '-')}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-
-    // Generate the PDF and download
-    html2pdf().set(options).from(element).save();
-}
-
-
-
-    if (items.length === 0) {
-        alert("No items found for the transaction. Please add items to proceed.");
-        return;
     }
 
-    $.ajax({
-        url: '/transactions',
-        type: 'POST',
-        data: {
-            date: date,
-            receipt_id: receiptID,
-            customer_name: customerName,
-            phone: customerPhone,
-            total_amount: totalAmount,
-            items: items,
-            _token: $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
-            printReceipt();
-            alert('Payment confirmed and transaction saved successfully.');
+    function resetCart() {
+        $.ajax({
+            url: '/cart/reset',
+            method: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                // Clear cart UI
+                $('#cart-table-body').empty();
+                $('#grand-total').html('<strong>₱0.00</strong>');
+                $('#cus-name').val('');
+                $('#cus-phone').val('');
 
-            // Reset the receipt data
-            resetReceiptData();
-        },
-        error: function(xhr, status, error) {
-            console.error('Failed to save transaction:', error);
-            alert('Failed to save transaction. Please try again.');
+                // Only reload if stocks were updated
+                if (response.stocksUpdated) {
+                    window.location.reload();
+                }
+            },
+            error: function(xhr) {
+                console.error("Error resetting cart:", xhr.responseText);
+            }
+        });
+    }
+
+    function resetCart() {
+        $.ajax({
+            url: '/cart/reset',
+            method: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                // Clear the cart table
+                $('#cart-table-body').empty();
+                $('#grand-total').html('<strong>₱0.00</strong>');
+
+                // Clear customer information
+                $('#cus-name').val('');
+                $('#cus-phone').val('');
+
+                // Reload the page to refresh product stock display
+                window.location.reload();
+            },
+            error: function(xhr) {
+                console.error("Error resetting cart:", xhr.responseText);
+            }
+        });
+    }
+
+    // Rest of the existing functions remain the same...
+    function generateReceiptID() {
+        return Math.random().toString(36).substr(2, 9).toUpperCase();
+    }
+
+    function prepareReceipt() {
+        const receiptID = generateReceiptID();
+        document.getElementById('receiptID').innerText = receiptID;
+
+        const date = new Date().toLocaleDateString();
+        document.getElementById('receiptDate').innerText = date;
+
+        const customerName = document.getElementById('cus-name').value || 'Unknown Customer';
+        const customerPhone = document.getElementById('cus-phone').value || 'N/A';
+
+        document.querySelector('.receipt-header .small-text:nth-child(2)').innerText = customerName;
+        document.querySelector('.receipt-header .small-text:nth-child(3)').innerText = `Phone: ${customerPhone}`;
+
+        let receiptContent = '';
+        let grandTotal = 0;
+
+        $('#cart-table-body tr').each(function() {
+            const productName = $(this).find('td:nth-child(1)').text();
+            const quantity = parseFloat($(this).find('input[id^="quantity-"]').val()) || 0;
+            const price = parseFloat($(this).find('input[id^="price-"]').val()) || 0;
+            const total = (quantity * price).toFixed(2);
+
+            grandTotal += parseFloat(total);
+
+            receiptContent += `
+                <tr>
+                    <td>${productName}</td>
+                    <td class="text-end">${quantity}</td>
+                    <td class="text-end">₱${price.toFixed(2)}</td>
+                    <td class="text-end">₱${total}</td>
+                </tr>
+            `;
+        });
+
+        $('.receipt-items tbody').html(receiptContent);
+        $('#grandTotal').text(`₱${grandTotal.toFixed(2)}`);
+
+        $('#invoiceModal').modal('show');
+    }
+
+    function printReceipt() {
+        const receiptContent = document.getElementById('receiptContent').cloneNode(true);
+        const printWindow = window.open('', '_blank');
+
+        const modalFooter = receiptContent.querySelector('.modal-footer');
+        if (modalFooter) {
+            modalFooter.remove();
         }
-    });
-}
 
-// Function to reset the receipt data
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Receipt</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+                        .receipt-style { width: 100%; margin: 0 auto; padding: 20px; }
+                        .receipt-header, .receipt-total { text-align: center; }
+                        .receipt-items, .receipt-items th, .receipt-items td {
+                            border-collapse: collapse;
+                            width: 100%;
+                            border: none;
+                            padding: 8px;
+                        }
+                        .receipt-items th { text-align: left; }
+                        .receipt-footer { text-align: center; font-size: 0.9em; color: #555; margin-top: 20px; }
+                        img { max-width: 100px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="receipt-style">${receiptContent.innerHTML}</div>
+                </body>
+            </html>
+        `);
 
-function resetReceiptData() {
-    $.ajax({
-        url: '{{ route('cart.reset') }}',
-        method: 'POST',
-        data: {
-            _token: '{{ csrf_token() }}'
-        },
-        success: function(response) {
-            // Clear the cart table
-            $('#cart-table-body').empty();
-            $('#grand-total').text('0.00'); // Reset grand total
+        printWindow.document.close();
 
-            // Reset customer fields
-            $('#cus-name').val('');
-            $('#cus-phone').val('');
-            $('#invoiceModal').modal('hide');
-
-            // Notify the user
-            alert(response.success);
-        },
-        error: function(xhr) {
-            console.error("Error resetting cart:", xhr.responseText);
-        }
-    });
-}
-
-
-
-
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 500);
+    }
 </script>

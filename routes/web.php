@@ -178,6 +178,11 @@ Route::middleware([
     // Route::get('/cashier/eggsales/report ',[CashierReportController::class,'eggsales']);
     // Route::get('/cashier/retail/report ',[CashierReportController::class,'salesretail']);
 
+    Route::get('/cashier/refresh-products', [CashierController::class, 'refreshProducts'])
+    ->name('cashier.refresh-products');
 
+    // In routes/web.php
+Route::post('/process-transaction', [CashierController::class, 'processTransaction'])->name('transaction.process');
 
+Route::post('/cart/clear', [CashierController::class, 'clearCart'])->name('cart.clear');
 });

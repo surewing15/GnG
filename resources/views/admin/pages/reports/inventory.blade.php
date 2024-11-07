@@ -9,7 +9,7 @@
                 <div class="nk-block-head nk-block-head-sm">
                     <div class="nk-block-between">
                         <div class="nk-block-head-content">
-                            <h3 class="nk-block-title page-title">Inventory - Initial Sales Report</h3>
+                            <h3 class="nk-block-title page-title">Stock-in Report</h3>
                         </div><!-- .nk-block-head-content -->
 
                         <div class="nk-block-head-content">
@@ -36,10 +36,11 @@
                                 <thead>
                                     <tr>
                                         <th>Item Code (SKU)</th>
-                                        <th># BAGS</th>
+                                        <th>BAGS</th>
                                         <th>KILOS</th>
 
-                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -48,7 +49,9 @@
                                         <td>4</td>
 
                                         <td>340</td>
-                                        <td>
+                                        <td>December, 7</td>
+                                        <td>11pm</td>
+                                        {{-- <td>
                                             <div class="dropdown">
                                                 <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <em class="icon ni ni-more-h"></em>
@@ -60,7 +63,7 @@
                                                     </ul>
                                                 </div>
                                             </div>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                     <!-- Additional rows can be added here -->
                                 </tbody>
